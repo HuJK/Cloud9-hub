@@ -35,4 +35,5 @@ Install
 usermod -aG shadow nginx
 usermod -aG shadow www-data
 wget -O- https://raw.githubusercontent.com/HuJK/Cloud9Hub/master/c9io.conf > /etc/nginx/sites-enabled/c9io
+nginx -s reload
 ```
