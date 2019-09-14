@@ -3,7 +3,7 @@ Simple hub page for Cloud9 SDK. Each user has one workspace, auth with linux pam
 
 A nginx reverse proxy config which will try to authentic user with linux pam module ,and try to execute command to spawn a cloud9 workspace by that user, and proxy_pass to it.
 
-Prenstall (according on memory, not test on clean environment yet)
+Prenstall (according on my memory, not test on clean environment yet)
 --
 
 debian/ubuntu (run as root):
