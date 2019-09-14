@@ -5,7 +5,7 @@ A nginx reverse proxy config which will try to authentic user with linux pam mod
 
 Prenstall (according on memory, not test on clean environment yet)
 --
-
+```
 debian/ubuntu (run as root):
 apt-get install -y nginx-full
 apt-get install -y lua5.2 lua5.2-doc liblua5.2-dev
@@ -25,3 +25,4 @@ cd sdk
 ./scripts/install-sdk.sh
 
 cp -r ~/.c9 /etc/c9
+```
