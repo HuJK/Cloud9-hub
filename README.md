@@ -5,8 +5,9 @@ A nginx reverse proxy config which will try to authentic user with linux pam mod
 
 Prenstall (according on memory, not test on clean environment yet)
 --
-```
+
 debian/ubuntu (run as root):
+```bash
 apt-get install -y nginx-full
 apt-get install -y lua5.2 lua5.2-doc liblua5.2-dev
 apt-get install -y luajit
@@ -25,4 +26,13 @@ cd sdk
 ./scripts/install-sdk.sh
 
 cp -r ~/.c9 /etc/c9
+```
+
+Install
+--
+
+```bash
+usermod -aG shadow nginx
+usermod -aG shadow www-data
+wget -O- https://raw.githubusercontent.com/HuJK/Cloud9Hub/master/c9io.conf > /etc/nginx/sites-enabled/c9io
 ```
