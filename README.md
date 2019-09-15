@@ -80,7 +80,7 @@ to your certificate and keys.
 
 I strongly recommend that you should use https instead of http for this site or any other site for security reason. 
 
-You can get it latsencrypte for free.
+You can get it at latsencrypte for free.
 
 That's why I disable http access by default. 
 
