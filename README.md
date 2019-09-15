@@ -3,14 +3,6 @@ Simple hub page for Cloud9 SDK. Each user has one workspace, auth with linux pam
 
 A nginx reverse proxy config which will try to authentic user with linux pam module ,and try to execute command to spawn a cloud9 workspace by that user, and proxy_pass to it.
 
-Edit domain
---
-First, edit 
-```
-c9.example.com
-```
-to your domain name o
-
 Prenstall (according on my memory, not test on clean environment yet)
 --
 
@@ -60,11 +52,11 @@ edit ```/etc/nginx/sites-enabled/c9io``` with vim, nano, or any other text editi
 modify ```c9.example.com``` to your domain.
 
 #### port based virtual host:
-Same as previous step, but modify ```c9.example.com``` to ```default_server```. 
+1. Same as previous step, but modify ```c9.example.com``` to ```default_server```. 
 
-And edit ```listen 443 ssl;``` from 443 to other ports that you prefer.
+2. And edit ```listen 443 ssl;``` from 443 to other ports that you prefer.
 
-**Remove** this part from config:
+3. **Remove** this part from config:
 ```
 server {
     listen 80;
@@ -78,12 +70,13 @@ server {
 
 I strongly recommend that you should use https instead of http for this site or any other site for security reason. That's why I disable http access by default. But if you just want to test, or not host in public network. You can do following steps.
 
-**Remove** this part
+1. **Remove** this part
 ```
     ssl_certificate     /etc/nginx_ssl/lab.pem;
     ssl_certificate_key /etc/nginx_ssl/lab.key;
 ```
-Modify from (assume you use 8080 pprt)
+
+2. Modify from (assume you use 8080 pprt)
 ```
 listen 8080 ssl;
 listen [::]:8080 ssl;
