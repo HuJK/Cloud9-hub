@@ -59,9 +59,9 @@ from 8443 to other ports that you prefer.
 ```
 to your certificate and keys.
 
-3. Enable http.(if you don't have a valid ssl certificate)
+###### 3. Enable http.(if you don't have a valid ssl certificate)
 
-I strongly recommend that you should use https instead of http for this site or any other site for security reason. 
+I strongly recommend that you should use https instead of http for security reason. 
 
 You can get it from letsencrypt for free.
 
