@@ -61,3 +61,14 @@ modyfy ```c9.example.com``` to your domain.
 
 if you don't have a domain, modify ```c9.example.com``` to ```default_server```. 
 And edit ``` listen 80;  listen 443 ssl;``` to other ports.
+
+I strongly recommend that you should use https for this site or any other site. But if you just want to test, or not host in public network. You can remove this part from config:
+```
+server {
+    listen 80;
+    server_name c9.example.com;
+    #password transfer by http_basic_auth. It's very dangerous to transfer it without encryption.
+    return 302 https://$host$request_uri;
+}
+```
+And modify ```listen 443 ssl;    listen [::]:443 ssl;``` to ```listen 8080;  listen [::]:8080;``` choose any port that you want.
