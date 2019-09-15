@@ -8,12 +8,13 @@ Prenstall (according on my memory, not test on clean environment yet)
 
 debian/ubuntu (run as root):
 ```bash
+apt-get update
 apt-get install -y nginx-full
 apt-get install -y libnginx-mod-http-auth-pam
 apt-get install -y lua5.2 lua5.2-doc liblua5.2-dev
 apt-get install -y luajit
 apt-get install -y libnginx-mod-http-lua
-apt-get install -y tmux gdbserver git
+apt-get install -y tmux gdbserver git python python-pip python3 python3-pip build-essential wget libncurses-dev nodejs
 
 mkdir /etc/c9
 mkdir /etc/c9/sock
@@ -25,8 +26,6 @@ cd /etc/c9
 git clone https://github.com/c9/core sdk
 cd sdk
 ./scripts/install-sdk.sh
-
-chmod -R 755 /etc/c9/sdk
 
 cp -r ~/.c9 /etc/c9
 chmod -R 755 /etc/c9/sdk
@@ -66,7 +65,7 @@ mkdir /etc/c9/cert
 chmod 600 /etc/c9/cert
 cd /etc/c9/cert
 openssl genrsa -out ssl.key 2048
-openssl req -new -x509 -key ssl.key -out ssl.cert -days 3650 -subj /CN=localhost
+openssl req -new -x509 -key ssl.key -out ssl.pem -days 3650 -subj /CN=localhost
 ```
 
 
