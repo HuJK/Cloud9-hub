@@ -74,7 +74,8 @@ server {
 }
 ```
 
-#Enable http access.
+####Enable http access.
+
 I strongly recommend that you should use https instead of http for this site or any other site for security reason. That's why I disable http access by default. But if you just want to test, or not host in public network. You can do following steps.
 
 **Remove** this part
