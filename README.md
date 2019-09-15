@@ -57,12 +57,12 @@ edit ```/etc/nginx/sites-enabled/c9io``` with vim nano or other text editior
  8    server_name c9.example.com;
 17    server_name c9.example.com;
 ```
-modyfy ```c9.example.com``` to your domain.
+modify ```c9.example.com``` to your domain.
 
 if you don't have a domain, modify ```c9.example.com``` to ```default_server```. 
 And edit ``` listen 80;  listen 443 ssl;``` to other ports.
 
-I strongly recommend that you should use https for this site or any other site. But if you just want to test, or not host in public network. You can remove this part from config:
+I strongly recommend that you should use https for this site or any other site. But if you just want to test, or not host in public network. You can **remove** this part from config:
 ```
 server {
     listen 80;
@@ -71,4 +71,9 @@ server {
     return 302 https://$host$request_uri;
 }
 ```
-And modify ```listen 443 ssl;    listen [::]:443 ssl;``` to ```listen 8080;  listen [::]:8080;``` choose any port that you want.
+and
+```
+    ssl_certificate     /root/.acme.sh/.nginx_ssl/lab.pem;
+    ssl_certificate_key /root/.acme.sh/.nginx_ssl/lab.key;
+```
+And modify ```listen 443 ssl; ```,```listen [::]:443 ssl;``` to ```listen 8080;```,```listen [::]:8080;``` choose any port that you want.
