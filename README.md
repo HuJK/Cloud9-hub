@@ -43,8 +43,10 @@ wget -O- https://raw.githubusercontent.com/HuJK/Cloud9Hub/master/c9io.conf > /et
 
 Postinstall.
 --
+edit ```/etc/nginx/sites-enabled/c9io``` with vim, nano, or any other text editior with root. And follow following instructions.
+
 #### domain based virtual host:
-edit ```/etc/nginx/sites-enabled/c9io``` with vim, nano, or any other text editior with root:
+Edit this part:
 ```
  8    server_name c9.example.com;
 17    server_name c9.example.com;
@@ -66,7 +68,7 @@ server {
 }
 ```
 
-####Enable http access.
+#### Enable http access.
 
 I strongly recommend that you should use https instead of http for this site or any other site for security reason. That's why I disable http access by default. But if you just want to test, or not host in public network. You can do following steps.
 
