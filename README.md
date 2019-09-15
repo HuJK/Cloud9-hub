@@ -49,7 +49,7 @@ usermod -aG shadow www-data
 wget -O- https://raw.githubusercontent.com/HuJK/Cloud9Hub/master/c9io.conf > /etc/nginx/sites-enabled/c9io
 ```
 
-Config
+Postinstall.
 --
 #### domain based virtual host:
 edit ```/etc/nginx/sites-enabled/c9io``` with vim, nano, or any other text editior with root:
@@ -74,9 +74,21 @@ server {
 }
 ```
 
-I strongly recommend that you should use https for this site or any other site. But if you just want to test, or not host in public network. You can **remove**
+#Enable http access.
+I strongly recommend that you should use https instead of http for this site or any other site for security reason. That's why I disable http access by default. But if you just want to test, or not host in public network. You can do following steps.
+
+**Remove** this part
 ```
     ssl_certificate     /etc/nginx_ssl/lab.pem;
     ssl_certificate_key /etc/nginx_ssl/lab.key;
 ```
-And modify ```listen 8080 ssl; ```,```listen [::]:8080 ssl;``` to ```listen 8080;```,```listen [::]:8080;```. Remove ssl from it.
+Modify from (assume you use 8080 pprt)
+```
+listen 8080 ssl;
+listen [::]:8080 ssl;
+```
+to
+```
+listen 8080;
+listen [::]:8080;
+```
