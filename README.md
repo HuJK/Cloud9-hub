@@ -45,7 +45,10 @@ Postinstall.
 --
 Edit ```/etc/nginx/sites-enabled/c9io``` with vim, nano, or any other text editior with root. And follow following instructions.
 
-#### domain based virtual host:
+
+===================================
+
+###### domain based virtual host:
 Edit this part:
 ```
  8    server_name c9.example.com;
@@ -68,7 +71,10 @@ server {
 }
 ```
 
+=========================================
+
 ###### Config for https
+
 1. Edit this part
 ```
     ssl_certificate     /etc/nginx_ssl/lab.pem;
@@ -76,7 +82,7 @@ server {
 ```
 to your certificate and keys.
 
-#### Config for http.(if you don't have a valid ssl certificate)
+###### Config for http.(if you don't have a valid ssl certificate)
 
 I strongly recommend that you should use https instead of http for this site or any other site for security reason. 
 
@@ -102,5 +108,7 @@ to
 listen 8080;
 listen [::]:8080;
 ```
+
+====================================
 
 Now, reload nginx with ```nginx -s reload```
