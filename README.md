@@ -48,13 +48,15 @@ Postinstall.
 --
 Edit ```/etc/nginx/sites-enabled/c9io``` with vim, nano, or any other text editior with root. And follow following instructions.
 
-1. Edit line 8~9
+###### 1. Change port number
+Edit line 8~9
 ```
     listen 8443 ssl;
     listen [::]:8443 ssl;
 ``` 
 from 8443 to other ports that you prefer.
 
+###### 2. Spacify ssl certificates
 2. Edit line 10~11
 ```
     ssl_certificate     /etc/nginx_ssl/lab.pem;
@@ -62,7 +64,7 @@ from 8443 to other ports that you prefer.
 ```
 to your certificate and keys.
 
-###### 3. Enable http.(if you don't have a valid ssl certificate)
+###### Enable http.(if you don't have a valid ssl certificate)
 
 I strongly recommend that you should use https instead of http for security reason. 
 
