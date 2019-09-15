@@ -14,13 +14,15 @@ apt-get install -y libnginx-mod-http-auth-pam
 apt-get install -y lua5.2 lua5.2-doc liblua5.2-dev
 apt-get install -y luajit
 apt-get install -y libnginx-mod-http-lua
-apt-get install -y tmux gdbserver git python python-pip python3 python3-pip build-essential wget libncurses-dev nodejs
+apt-get install -y tmux gdbserver git python python-pip python3 python3-pip build-essential wget libncurses-dev nodejs npm
+pip3 install pexpect
+sudo npm install socket.io
 
 mkdir /etc/c9
 mkdir /etc/c9/sock
 mkdir /etc/c9/util
-chmod 777 /etc/c9/sock
 wget -O- https://raw.githubusercontent.com/kikito/md5.lua/master/md5.lua > /etc/c9/util/md5.lua
+wget -O- https://raw.githubusercontent.com/HuJK/Cloud9Hub/master/pip2su.py > /etc/c9/util/pip2su.py
 
 cd /etc/c9
 git clone https://github.com/c9/core sdk
@@ -30,6 +32,8 @@ cd sdk
 cp -r ~/.c9 /etc/c9
 chmod -R 755 /etc/c9/sdk
 chmod -R 755 /etc/c9/.c9
+chmod -R 755 /etc/c9/util
+chmod -R 777 /etc/c9/sock
 ```
 
 Install
