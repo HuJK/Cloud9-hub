@@ -1,0 +1,20 @@
+--- c9sdk/plugins/c9.ide.login/login.js 2019-09-15 20:31:25.899875090 +0800
++++ sdk/plugins/c9.ide.login/login.js   2019-09-15 20:42:50.873554329 +0800
+@@ -109,11 +109,12 @@
+                 menus.addItemByPath(name + "/~", new ui.divider(), c += 100, plugin);
+                 menus.addItemByPath(name + "/Log out", new ui.item({
+                     onclick: function() {
+-                        if (!c9.local)
+-                            return signout();
+-                        auth.logout(function() {
+-                            info.login(true);
+-                        });
++                       window.location.replace("/401-logout.html");
++                       //if (!c9.local)
++                        //    return signout();
++                        //auth.logout(function() {
++                        //    info.login(true);
++                        //});
+                     }
+                 }), c += 100, plugin);
+             }
