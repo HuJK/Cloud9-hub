@@ -59,7 +59,7 @@ server {
                 server_auth = remote_user .. ":" .. md5.sumhexa(ngx.var.server_salt .. remote_password)
                 spcmd = "unset TMUX ;cp -rn /etc/c9/.c9 $HOME ;rm -f /etc/c9/sock/c9-$USER.sock 2>/dev/null ;tmux new -d -s c9io node /etc/c9/sdk/server.js -p /etc/c9/sock/c9-$USER.sock -a " .. server_auth .. " -w $HOME ;sleep 1 ;chmod 666 /etc/c9/sock/c9-$USER.sock"
                 spcmd_by_su = "su " .. remote_user  .. " -c '" .. spcmd .. "'"
-                fp = io.popen( spcmd_by_su ,"w")
+                fp = io.popen("python3 /etc/c9/util/pip2su.py " ..  spcmd_by_su ,"w")
                 fp:write(remote_password)
                 fp:close()
                 ngx.say("Spawning workspace...")
