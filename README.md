@@ -38,7 +38,8 @@ Install
 ```bash
 usermod -aG shadow nginx
 usermod -aG shadow www-data
-wget -O- https://raw.githubusercontent.com/HuJK/Cloud9Hub/master/c9io > /etc/nginx/sites-enabled/c9io
+wget -O- https://raw.githubusercontent.com/HuJK/Cloud9Hub/master/c9io > /etc/nginx/sites-available/c9io
+ln -s /etc/nginx/sites-available/c9io /etc/nginx/sites-enabled/c9io
 ```
 
 Postinstall.
