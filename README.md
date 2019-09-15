@@ -43,7 +43,7 @@ wget -O- https://raw.githubusercontent.com/HuJK/Cloud9Hub/master/c9io.conf > /et
 
 Postinstall.
 --
-edit ```/etc/nginx/sites-enabled/c9io``` with vim, nano, or any other text editior with root. And follow following instructions.
+Edit ```/etc/nginx/sites-enabled/c9io``` with vim, nano, or any other text editior with root. And follow following instructions.
 
 #### domain based virtual host:
 Edit this part:
@@ -88,3 +88,5 @@ to
 listen 8080;
 listen [::]:8080;
 ```
+
+Now, reload nginx with ```nginx -s reload```
