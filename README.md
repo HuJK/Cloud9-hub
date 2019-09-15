@@ -51,18 +51,20 @@ wget -O- https://raw.githubusercontent.com/HuJK/Cloud9Hub/master/c9io.conf > /et
 
 Config
 --
-
-edit ```/etc/nginx/sites-enabled/c9io``` with vim nano or other text editior
+#### domain based virtual host:
+edit ```/etc/nginx/sites-enabled/c9io``` with vim, nano, or any other text editior with root:
 ```
  8    server_name c9.example.com;
 17    server_name c9.example.com;
 ```
 modify ```c9.example.com``` to your domain.
 
-if you don't have a domain, modify ```c9.example.com``` to ```default_server```. 
-And edit ``` listen 80;  listen 443 ssl;``` to other ports.
+#### port based virtual host:
+Same as previous step, but modify ```c9.example.com``` to ```default_server```. 
 
-I strongly recommend that you should use https for this site or any other site. But if you just want to test, or not host in public network. You can **remove** this part from config:
+And edit ```listen 443 ssl;``` from 443 to other ports that you prefer.
+
+**Remove** this part from config:
 ```
 server {
     listen 80;
@@ -71,9 +73,10 @@ server {
     return 302 https://$host$request_uri;
 }
 ```
-and
+
+I strongly recommend that you should use https for this site or any other site. But if you just want to test, or not host in public network. You can **remove**
 ```
-    ssl_certificate     /root/.acme.sh/.nginx_ssl/lab.pem;
-    ssl_certificate_key /root/.acme.sh/.nginx_ssl/lab.key;
+    ssl_certificate     /etc/nginx_ssl/lab.pem;
+    ssl_certificate_key /etc/nginx_ssl/lab.key;
 ```
-And modify ```listen 443 ssl; ```,```listen [::]:443 ssl;``` to ```listen 8080;```,```listen [::]:8080;``` choose any port that you want.
+And modify ```listen 8080 ssl; ```,```listen [::]:8080 ssl;``` to ```listen 8080;```,```listen [::]:8080;```. Remove ssl from it.
