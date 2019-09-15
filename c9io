@@ -7,11 +7,10 @@ server {
     # Listen https on port 8443
     listen 8443 ssl;
     listen [::]:8443 ssl;
-    ssl_certificate     /etc/c9/ssl.pem;
-    ssl_certificate_key /etc/c9/ssl.key;
+    ssl_certificate     /etc/c9/cert/ssl.pem;
+    ssl_certificate_key /etc/c9/cert/ssl.key;
     server_name default_server;
-
-    ssl_stapling_verify on;
+    
     add_header Strict-Transport-Security max-age=15768000;
     set $server_salt "1!2@3=我是鹽";
     # Managing literal requests to the JupyterHub front end
@@ -41,7 +40,7 @@ server {
         # websocket headers
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection $connection_upgrade;
-        # if proxy_pass to workspace failed, spawn workspace
+        # if proxy_pass to workspace failed, spawn workspace 
         error_page 502 /502-server_conn_err.html;
     }
 
@@ -63,21 +62,39 @@ server {
                 fp = io.popen( spcmd_by_su ,"w")
                 fp:write(remote_password)
                 fp:close()
-                ngx.say("Spawning workspace")
-                ngx.say("If server not spawn, try to run this command in comsole:")
+                ngx.say("Spawning workspace...")
+                ngx.say("\nIf server not spawn, try to run this command in console:")
                 ngx.say("#######################")
                 ngx.say(spcmd:gsub(";","\n"))
                 ngx.say("#######################")
 
-                ngx.say("\nYou can check Cloud9 workspace status by this command: tmux a -t c9io")
-                ngx.say("\nPlease refresh this page. If it's done, you should be able to enter the server.")
+                ngx.say("\nYou can check Cloud9 workspace status by this command: \ntmux a -t c9io")
+                ngx.say("\nPlease refresh this page after a few seconds.")
             else
                 ngx.say("Need auth info!")
             end
         } 
     }
+    location = /401-shutdown.html {
+        auth_pam "Cloud9 Workspace";
+        auth_pam_service_name "auth-common";
+        rewrite_by_lua_block {
+            if ngx.var.http_authorization and ngx.var.remote_user then
+                local tmp = ngx.var.http_authorization
+                tmp = tmp:sub(tmp:find(' ')+1)
+                tmp = ngx.decode_base64(tmp)
+                remote_user     = tmp:sub(0,tmp:find(":")-1)
+                remote_password = tmp:sub(tmp:find(':')+1)
+                spcmd = "unset TMUX ;tmux send-keys -t c9io C-c ;sleep 1 ;tmux kill-session -t c9io"
+                spcmd_by_su = "su " .. remote_user  .. " -c '" .. spcmd .. "'"
+                fp = io.popen( spcmd_by_su ,"w")
+                fp:write(remote_password)
+                fp:close()
+            end
+        }
+        try_files DUMMY @return401;
+    }
     
-    #error_page 401 /401-logout.html;
     location = /401-logout.html {
         auth_pam "Cloud9 Workspace";
         auth_pam_service_name "auth-common";
@@ -98,3 +115,4 @@ server {
         allow all;
     }
 }
+
