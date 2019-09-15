@@ -1,20 +1,19 @@
 --- c9sdk/plugins/c9.ide.login/login.js 2019-09-15 20:31:25.899875090 +0800
 +++ sdk/plugins/c9.ide.login/login.js   2019-09-15 20:42:50.873554329 +0800
-@@ -109,11 +109,12 @@
+@@ -108,13 +108,10 @@
+             if (!options.noLogout) {
                  menus.addItemByPath(name + "/~", new ui.divider(), c += 100, plugin);
                  menus.addItemByPath(name + "/Log out", new ui.item({
-                     onclick: function() {
+-                    onclick: function() {
 -                        if (!c9.local)
 -                            return signout();
 -                        auth.logout(function() {
 -                            info.login(true);
 -                        });
-+                       window.location.replace("/401-logout.html");
-+                       //if (!c9.local)
-+                        //    return signout();
-+                        //auth.logout(function() {
-+                        //    info.login(true);
-+                        //});
-                     }
+-                    }
++                    onclick: function() { window.location = "/401-logout.html" ;    }
++                }), c += 100, plugin);
++                menus.addItemByPath(name + "/Stop workspace", new ui.item({
++                    onclick: function() { window.location = "/401-shutdown.html" ;    }
                  }), c += 100, plugin);
              }
