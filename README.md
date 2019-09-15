@@ -38,57 +38,32 @@ Install
 ```bash
 usermod -aG shadow nginx
 usermod -aG shadow www-data
-wget -O- https://raw.githubusercontent.com/HuJK/Cloud9Hub/master/c9io.conf > /etc/nginx/sites-enabled/c9io
+wget -O- https://raw.githubusercontent.com/HuJK/Cloud9Hub/master/c9io > /etc/nginx/sites-enabled/c9io
 ```
 
 Postinstall.
 --
 Edit ```/etc/nginx/sites-enabled/c9io``` with vim, nano, or any other text editior with root. And follow following instructions.
 
-
-===================================
-
-###### domain based virtual host:
-Edit this part:
+1. Edit line 8~9
 ```
- 8    server_name c9.example.com;
-17    server_name c9.example.com;
-```
-modify ```c9.example.com``` to your domain.
+    listen 8443 ssl;
+    listen [::]:8443 ssl;
+``` 
+from 8443 to other ports that you prefer.
 
-###### port based virtual host:
-1. Same as previous step, but modify ```c9.example.com``` to ```default_server```. 
-
-2. And edit ```listen 443 ssl;``` from 443 to other ports that you prefer.
-
-3. **Remove** this part from config:
-```
-server {
-    listen 80;
-    server_name c9.example.com;
-    #password transfer by http_basic_auth. It's very dangerous to transfer it without encryption.
-    return 302 https://$host$request_uri;
-}
-```
-
-=========================================
-
-###### Config for https
-
-1. Edit this part
+2. Edit line 10~11
 ```
     ssl_certificate     /etc/nginx_ssl/lab.pem;
     ssl_certificate_key /etc/nginx_ssl/lab.key;
 ```
 to your certificate and keys.
 
-###### Config for http.(if you don't have a valid ssl certificate)
+3. Enable http.(if you don't have a valid ssl certificate)
 
 I strongly recommend that you should use https instead of http for this site or any other site for security reason. 
 
-You can get it at latsencrypte for free.
-
-That's why I disable http access by default. 
+You can get it from letsencrypt for free.
 
 But if you just want to test, or not host in public network, You can do following steps.
 
@@ -98,17 +73,17 @@ But if you just want to test, or not host in public network, You can do followin
     ssl_certificate_key /etc/nginx_ssl/lab.key;
 ```
 
-2. Modify from (assume you use 8080 pprt)
+2.  **Remove** keyword ```ssl``` at line 8~9 
+from (assume you use 8080 pprt)
 ```
-listen 8080 ssl;
-listen [::]:8080 ssl;
+    listen 8443 ssl;
+    listen [::]:8443 ssl;
 ```
 to
 ```
-listen 8080;
-listen [::]:8080;
+    listen 8443;
+    listen [::]:8443;
 ```
 
-====================================
 
 Now, reload nginx with ```nginx -s reload```
