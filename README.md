@@ -49,21 +49,34 @@ Postinstall.
 --
 Edit ```/etc/nginx/sites-enabled/c9io``` with vim, nano, or any other text editior with root. And follow following instructions.
 
-###### 1. Change port number
+###### 1. Configure ssl certificates
+1. Buy or get a free domain
+2. Get a valid certificate from letsencrypt
+3. Edit line 10~11
+```
+    ssl_certificate     /etc/c9/cert/ssl.pem;
+    ssl_certificate_key /etc/c9/cert/ssl.key;
+```
+to your certificate and keys.
+
+Alternative: use self-signed certificates:
+```bash
+apt-get install -y install openssl
+mkdir /etc/c9/cert
+chmod 600 /etc/c9/cert
+cd /etc/c9/cert
+openssl genrsa -out ssl.key 2048
+openssl req -new -x509 -key ssl.key -out ssl.cert -days 3650 -subj /CN=localhost
+```
+
+
+###### 2. Change port number(if you want)
 Edit line 8~9
 ```
     listen 8443 ssl;
     listen [::]:8443 ssl;
 ``` 
 from 8443 to other ports that you prefer.
-
-###### 2. Spacify ssl certificates
-2. Edit line 10~11
-```
-    ssl_certificate     /etc/nginx_ssl/lab.pem;
-    ssl_certificate_key /etc/nginx_ssl/lab.key;
-```
-to your certificate and keys.
 
 ###### Enable http.(if you don't have a valid ssl certificate)
 
