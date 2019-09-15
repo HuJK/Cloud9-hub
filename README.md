@@ -68,9 +68,23 @@ server {
 }
 ```
 
-#### Enable http access.
+#### Config https certificate
+1. Edit this part
+```
+    ssl_certificate     /etc/nginx_ssl/lab.pem;
+    ssl_certificate_key /etc/nginx_ssl/lab.key;
+```
+to your certificate and keys.
 
-I strongly recommend that you should use https instead of http for this site or any other site for security reason. That's why I disable http access by default. But if you just want to test, or not host in public network. You can do following steps.
+#### Switch to http.(if you don't have a valid ssl certificate)
+
+I strongly recommend that you should use https instead of http for this site or any other site for security reason. 
+
+You can get it latsencrypte for free.
+
+That's why I disable http access by default. 
+
+But if you just want to test, or not host in public network, You can do following steps.
 
 1. **Remove** this part
 ```
