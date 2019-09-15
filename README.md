@@ -53,7 +53,7 @@ Edit this part:
 ```
 modify ```c9.example.com``` to your domain.
 
-#### port based virtual host:
+###### port based virtual host:
 1. Same as previous step, but modify ```c9.example.com``` to ```default_server```. 
 
 2. And edit ```listen 443 ssl;``` from 443 to other ports that you prefer.
@@ -68,7 +68,7 @@ server {
 }
 ```
 
-#### Config https certificate
+###### Config for https
 1. Edit this part
 ```
     ssl_certificate     /etc/nginx_ssl/lab.pem;
@@ -76,7 +76,7 @@ server {
 ```
 to your certificate and keys.
 
-#### Switch to http.(if you don't have a valid ssl certificate)
+#### Config for http.(if you don't have a valid ssl certificate)
 
 I strongly recommend that you should use https instead of http for this site or any other site for security reason. 
 
