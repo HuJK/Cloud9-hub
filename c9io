@@ -65,7 +65,7 @@ server {
                 ngx.say("Spawning workspace...")
                 ngx.say("\nIf server not spawn, try to run this command in console:")
                 ngx.say("#######################")
-                ngx.say(spcmd:gsub(";","\n"))
+                ngx.say(spcmd)
                 ngx.say("#######################")
 
                 ngx.say("\nYou can check Cloud9 workspace status by this command: \ntmux a -t c9io")
@@ -86,7 +86,7 @@ server {
                 remote_user     = tmp:sub(0,tmp:find(":")-1)
                 remote_password = tmp:sub(tmp:find(':')+1)
                 spcmd = "unset TMUX ;tmux send-keys -t c9io C-c ;sleep 1 ;tmux kill-session -t c9io"
-                spcmd_by_su = "su " .. remote_user  .. " -c '" .. spcmd .. "'"
+                spcmd_by_su = "python3 /etc/c9/util/pip2su.py su " .. remote_user  .. " -c '" .. spcmd .. "'"
                 fp = io.popen( spcmd_by_su ,"w")
                 fp:write(remote_password)
                 fp:close()
