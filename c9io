@@ -104,10 +104,10 @@ server {
         try_files DUMMY /200-logout.html;
     }
     location = /200-login.html {
-        return 200 '<!DOCTYPE html><html><body><script>setTimeout(function(){document.homepage.submit();},100);</script><p>Logout. Back to homepag eafter 0.1 seconds.</p><form name="homepage" action="/" method="get"></form></body></html>';
+        return 200 '<!DOCTYPE html><html><body><script>setTimeout(function(){document.homepage.submit();},100);</script><p>Logout. Back to homepage after 0.1 seconds.</p><form name="homepage" action="/" method="get"></form></body></html>';
     }
     location = /200-logout.html {
-        return 200 '<!DOCTYPE html><html><body><script>setTimeout(function(){document.homepage.submit();},100);</script><p>Logout. Back to homepag eafter 0.1 seconds.</p><form name="homepage" action="/401-logout.html" method="get"></form></body></html>';
+        return 200 '<!DOCTYPE html><html><body><script>setTimeout(function(){document.homepage.submit();},100);</script><p>Logout. Back to homepage after 0.1 seconds.</p><form name="homepage" action="/401-logout.html" method="get"></form></body></html>';
     }
     location = /401-logout.html {
         auth_pam "Cloud9 Workspace";
@@ -120,7 +120,7 @@ server {
         return 401 '<!DOCTYPE html><html><body><script>setTimeout(function(){document.homepage.submit();},100);</script><p>Logout. Back to homepage after 0.1 seconds.</p><form name="homepage" action="/200-login.html" method="get"></form></body></html>';
     }
     location @return200 {
-        return 200 '<!DOCTYPE html><html><body><script>setTimeout(function(){document.homepage.submit();},100);</script><p>Logout. Back to homepag eafter 0.1 seconds.</p><form name="homepage" action="/200-login.html" method="get"></form></body></html>';
+        return 200 '<!DOCTYPE html><html><body><script>setTimeout(function(){document.homepage.submit();},100);</script><p>Logout. Back to homepage after 0.1 seconds.</p><form name="homepage" action="/200-login.html" method="get"></form></body></html>';
     }
 
 
