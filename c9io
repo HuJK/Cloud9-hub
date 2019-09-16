@@ -48,10 +48,16 @@ server {
         # if proxy_pass to workspace failed, spawn workspace 
         error_page 502 /502-server_conn_err.html;
     }
-
+    
     location = /502-server_conn_err.html {
-        default_type 'text/plain';
-        add_header "Content-Type" "text/plain" always;
+        auth_pam "Cloud9 Workspace";
+        auth_pam_service_name "auth-common";
+        return 502 '<center><h1>Woekspace not running</h1></center><center><input type="button" value="Spawn Woekspace" onclick="window.location.href=\'/200-server_spawn.html\'" style="width:200px;height:40px;font-size:20px;"></center><hr /><center>Cloud 9 SDK (Ubuntu)</center>';
+    } 
+
+    location = /200-server_spawn.html {
+        default_type 'text/html';
+        add_header "Content-Type" "text/html" always;
         content_by_lua_block {
             package.path = package.path .. ";/etc/c9/util/md5.lua"
             local md5 = require 'md5'  
@@ -64,26 +70,63 @@ server {
                 server_auth      = remote_user .. ":" .. md5.sumhexa(ngx.var.server_salt .. remote_password)
                 server_sock_path = remote_user .. "_" .. md5.sumhexa(ngx.var.server_sal2 .. remote_password)
                 server_sock_path = "/etc/c9/sock/c9-" .. server_sock_path .. ".sock"
-                ndcmd = "node /etc/c9/sdk/server.js --collab -p " .. server_sock_path .. " -a " .. server_auth .. " -w $HOME "
-                spcmd = "unset TMUX ;cp -rn /etc/c9/.c9 $HOME ;rm -f " .. server_sock_path .." 2>/dev/null ;tmux new -d -s c9io " .. ndcmd .. " ;sleep 1 ;chmod 666 " .. server_sock_path
-                spcmd_by_su = "su " .. remote_user  .. " -c '" .. spcmd .. "'"
-                fp = io.popen("python3 /etc/c9/util/pip2su.py " ..  spcmd_by_su ,"w")
-                fp:write(remote_password)
-                fp:close()
-                ngx.say("Spawning workspace...")
-                ngx.say("\nIf server not spawn, try to run this command in ssh console:")
-                ngx.say("#######################")
-                ngx.say(spcmd:gsub(";", "\n") .. "\n")
-                ngx.say("#######################")
-                ngx.say("\nIf server still not spawn, Please run this command in ssh console, check is there any error:")
-                ngx.say(ndcmd)
-                ngx.say("\nYou can check Cloud9 workspace status by this command: \ntmux a -t c9io")
-                ngx.say("\nPlease refresh this page after a few seconds.")
+                response = ngx.location.capture('/ide.html')
+                if response.status ~= 201 then
+                    ndcmd = "node /etc/c9/sdk/server.js --collab -p " .. server_sock_path .. " -a " .. server_auth .. " -w $HOME "
+                    spcmd = "unset TMUX ;cp -rn /etc/c9/.c9 $HOME ;rm -f " .. server_sock_path .." 2>/dev/null ;tmux kill-session -t c9io ;tmux new -d -s c9io " .. ndcmd .. " ;sleep 1 ;chmod 666 " .. server_sock_path
+                    spcmd_by_su = "su " .. remote_user  .. " -c '" .. spcmd .. "'"
+                    fp = io.popen("python3 /etc/c9/util/pip2su.py " ..  spcmd_by_su ,"w")
+                    fp:write(remote_password)
+                    fp:close()
+                    ngx.say("<center><h1>Spawning workspace</h1></center>")
+                    ngx.say("<p>If server not spawn, try to run this command in ssh console:<br>")
+                    ngx.say("<code>")
+                    ngx.say(spcmd:gsub(";", "\n"):gsub("&", "&amp;"):gsub("\"", "&quot;"):gsub("<", "&lt;"):gsub(">", "&gt;"):gsub("\n", "<br>") .. "<br>")
+                    ngx.say("</code></p>")
+                    ngx.say("<p>If server still not spawn, Please run this command in ssh console, check is there any error:<br>")
+                    ngx.say("<code>")
+                    ngx.say(ndcmd:gsub("\"", "&quot;"):gsub("<", "&lt;"):gsub(">", "&gt;"):gsub("&", "&amp;") .. "<br>")
+                    ngx.say("</code></p>")
+                    ngx.say("<p>You can check Cloud9 workspace status by this command: <br><code>tmux a -t c9io</code><br></p>")
+                    ngx.say("<hr />")
+                    ngx.say("<br>Please refresh this page after a few seconds.<br>")
+                    ngx.say('<script>window.onload = function() { setInterval(function(){ var xhttp = new XMLHttpRequest(); xhttp.onreadystatechange = function() { if (this.status == 200) { window.location.replace("/ide.html"); } }; xhttp.open("GET", "/200-server_check.html", true); xhttp.send();},1000);};</script>')
+                else
+                    ngx.redirect("/ide.html")
+                end
             else
                 ngx.say("Need auth info!")
             end
         } 
     }
+    location = /200-server_check.html {
+        default_type 'text/plain';
+        add_header "Content-Type" "text/plain" always;
+        auth_pam "Cloud9 Workspace";
+        auth_pam_service_name "auth-common";
+        content_by_lua_block {
+            package.path = package.path .. ";/etc/c9/util/md5.lua"
+            local md5 = require 'md5'  
+            if ngx.var.http_authorization then
+                local tmp = ngx.var.http_authorization
+                tmp = tmp:sub(tmp:find(' ')+1)
+                tmp = ngx.decode_base64(tmp)
+                remote_user     = tmp:sub(0,tmp:find(":")-1)
+                remote_password = tmp:sub(tmp:find(':')+1)
+                server_auth      = remote_user .. ":" .. md5.sumhexa(ngx.var.server_salt .. remote_password)
+                server_sock_path = remote_user .. "_" .. md5.sumhexa(ngx.var.server_sal2 .. remote_password)
+                server_sock_path = "/etc/c9/sock/c9-" .. server_sock_path .. ".sock"
+                response = ngx.location.capture('/ide.html')
+                response_code = response.status
+                ngx.status = response_code
+                ngx.say(tostring(response_code))
+                ngx.exit(response_code)
+            else
+                ngx.say("Need auth info!")
+            end
+        } 
+    }
+    
     location = /200-shutdown.html {
         auth_pam "Cloud9 Workspace";
         auth_pam_service_name "auth-common";
