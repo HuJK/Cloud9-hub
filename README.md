@@ -4,7 +4,7 @@ Simple hub page for Cloud9 SDK. Each user has one workspace, authenticate with l
 This is an nginx reverse proxy config which will try to authenticate user:password with linux pam module ,and try to execute command to spawn a cloud9 workspace by that user, and then proxy_pass to it.
 
 
-## Script install
+## Script install for UUbuntu 18.04
 **Warning:** In my debian, package ```nginx``` and ```nginx-full``` use different version of nginx, so it's not compatible.
 
 In this script, I use ```nginx-full``` package, please remove ```nginx``` before install to make sure it will go smoothly.
@@ -17,6 +17,16 @@ Run this in root console
 
 And goto url : [https://your_server_ip:8443](https://your_server_ip:8443)
 
+Demo page:
+https://3.91.27.2:8443/
+
+Demo account:
+
+user|passwd
+------|---------
+demo01|demo)!
+demo02|demo)@
+demo03|demo)#
 
 # Manual install 
 Prenstall
