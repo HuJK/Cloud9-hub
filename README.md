@@ -10,9 +10,12 @@ This is an nginx reverse proxy config which will try to authenticate user:passwo
 In this script, I use ```nginx-full``` package, please remove ```nginx``` before install to make sure it will go smoothly.
 
 **Warning:** This script have ```apt-get upgrade -y``` in it.
-```
-sh -c "$(wget -O- https://raw.githubusercontent.com/HuJK/Cloud9-hub/master/install.sh)"
-```
+
+Run this in root console
+```sh -c "$(wget -O- https://raw.githubusercontent.com/HuJK/Cloud9-hub/master/install.sh)"```
+
+And goto url : [https://your_server_ip:8443](https://your_server_ip:8443)
+
 
 # Manual install 
 Prenstall
