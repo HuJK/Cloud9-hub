@@ -2,6 +2,9 @@
 set -x
 apt-get update
 apt-get update  -y
+# The install script will detect npm exist or not on the system. If exist, it will not use itself's npm
+# But in Ubuntu 19.04, npm from apt are not compatible with it. So I have to remove first, and install back later.
+apt-get purge   -y  npm
 apt-get install -y nginx-full
 apt-get install -y libnginx-mod-http-auth-pam
 apt-get install -y lua5.2 lua5.2-doc liblua5.2-dev
@@ -12,7 +15,6 @@ apt-get install -y python-pip python3-pip golang default-jdk coffeescript php-cl
 apt-get install -y zsh fish tree ncdu aria2  p7zip-full python3-dev perl curl
 curl https://install.meteor.com/ | sh
 pip3 install pexpect
-sudo npm install socket.io
 
 mkdir /etc/c9
 mkdir /etc/c9/sock
@@ -31,6 +33,8 @@ chmod -R 755 /etc/c9/.c9
 chmod -R 755 /etc/c9/util
 chmod -R 773 /etc/c9/sock
 HOME=/root
+# Install npm back
+apt-get install -y npm
 
 usermod -aG shadow nginx
 usermod -aG shadow www-data
