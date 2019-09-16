@@ -9,7 +9,7 @@ apt-get install -y luajit
 apt-get install -y libnginx-mod-http-lua
 apt-get install -y tmux gdbserver gdb git python python3 build-essential wget libncurses-dev nodejs 
 apt-get install -y python-pip python3-pip npm golang default-jdk coffeescript php-cli php-fpm ruby
-apt-get install -y zsh fish tree ncdu aria2  p7zip-full python3-dev perl 
+apt-get install -y zsh fish tree ncdu aria2  p7zip-full python3-dev perl curl
 curl https://install.meteor.com/ | sh
 pip3 install pexpect
 sudo npm install socket.io
