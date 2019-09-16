@@ -5,11 +5,9 @@ This is an nginx reverse proxy config which will try to authenticate user:passwo
 
 
 ## Script install for Ubuntu 18.04
-**Warning:** In my debian, package ```nginx``` and ```nginx-full``` use different version of nginx, so it's not compatible.
+**Warning:** This script will reinstall your nginx and npm.
 
-In this script, I use ```nginx-full``` package, please remove ```nginx``` before install to make sure it will go smoothly.
-
-**Warning:** This script have ```apt-get upgrade -y``` in it.
+**Warning:** This script will upgrade your system by ```apt-get upgrade -y``` command.
 
 Run this in root console
 
