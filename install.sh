@@ -7,7 +7,9 @@ apt-get install -y libnginx-mod-http-auth-pam
 apt-get install -y lua5.2 lua5.2-doc liblua5.2-dev
 apt-get install -y luajit
 apt-get install -y libnginx-mod-http-lua
-apt-get install -y tmux gdbserver gdb git python python-pip python3 python3-pip build-essential wget libncurses-dev nodejs npm golang coffeescript  default-jdk coffeescript php-cli php-fpm ruby
+apt-get install -y tmux gdbserver gdb git python python3 build-essential wget libncurses-dev nodejs 
+apt-get install -y python-pip python3-pip npm golang default-jdk coffeescript php-cli php-fpm ruby
+apt-get install -y zsh fish tree ncdu aria2  p7zip-full python3-dev perl 
 curl https://install.meteor.com/ | sh
 pip3 install pexpect
 sudo npm install socket.io
