@@ -17,10 +17,8 @@ Run this in root console
 
 And goto url : [https://your_server_ip:8443](https://your_server_ip:8443)
 
-Demo page:
-https://3.91.27.2:8443/
-
-Demo account:
+Demo:
+[https://3.91.27.2:8443/](https://3.91.27.2:8443/)
 
 user|passwd
 ------|---------
