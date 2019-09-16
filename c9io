@@ -34,8 +34,8 @@ server {
                 remote_user     = tmp:sub(0,tmp:find(":")-1)
                 remote_password = tmp:sub(tmp:find(':')+1)
                 server_auth      = remote_user .. ":" .. md5.sumhexa(ngx.var.server_salt .. remote_password)
-                server_sock_path = remote_user .. ":" .. md5.sumhexa(ngx.var.server_sal2 .. remote_password)
-                server_sock_path = "/etc/c9/sock/c9-" .. server_sock_path .. ".sock"
+                server_sock_path = remote_user .. "_" .. md5.sumhexa(ngx.var.server_sal2 .. remote_password)
+                server_sock_path = "http://unix:/etc/c9/sock/c9-" .. server_sock_path .. ".sock"
                 ngx.var.server_sock_path = server_sock_path
                 ngx.var.server_auth_base64 = ngx.encode_base64( server_auth )
             end
@@ -62,7 +62,7 @@ server {
                 remote_user     = tmp:sub(0,tmp:find(":")-1)
                 remote_password = tmp:sub(tmp:find(':')+1)
                 server_auth      = remote_user .. ":" .. md5.sumhexa(ngx.var.server_salt .. remote_password)
-                server_sock_path = remote_user .. ":" .. md5.sumhexa(ngx.var.server_sal2 .. remote_password)
+                server_sock_path = remote_user .. "_" .. md5.sumhexa(ngx.var.server_sal2 .. remote_password)
                 server_sock_path = "/etc/c9/sock/c9-" .. server_sock_path .. ".sock"
                 spcmd = "unset TMUX ;cp -rn /etc/c9/.c9 $HOME ;rm -f " .. server_sock_path .." 2>/dev/null ;tmux new -d -s c9io node /etc/c9/sdk/server.js -p " .. server_sock_path .. " -a " .. server_auth .. " -w $HOME ;sleep 1 ;chmod 666 " .. server_sock_path
                 spcmd_by_su = "su " .. remote_user  .. " -c '" .. spcmd .. "'"
