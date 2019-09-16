@@ -40,7 +40,7 @@ server {
             end
         }
         proxy_set_header Authorization "Basic ${server_auth_base64}";
-        proxy_pass "http://unix:/etc/c9/sock/c9-${server_sock_path}.sock";;
+        proxy_pass "http://unix:/etc/c9/sock/c9-${server_sock_path}.sock";
         # websocket headers
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection $connection_upgrade;
