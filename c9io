@@ -82,7 +82,7 @@ server {
             end
         } 
     }
-    location = /401-shutdown.html {
+    location = /200-shutdown.html {
         auth_pam "Cloud9 Workspace";
         auth_pam_service_name "auth-common";
         rewrite_by_lua_block {
@@ -99,9 +99,14 @@ server {
                 fp:close()
             end
         }
-        try_files DUMMY @return401;
+        try_files DUMMY /200-logout.html;
     }
-    
+    location = /200-login.html {
+        return 200 '<!DOCTYPE html><html><body><script>setTimeout(function(){document.homepage.submit();},100);</script><p>Logout. Back to homepag eafter 0.1 seconds.</p><form name="homepage" action="/" method="get"></form></body></html>';
+    }
+    location = /200-logout.html {
+        return 200 '<!DOCTYPE html><html><body><script>setTimeout(function(){document.homepage.submit();},100);</script><p>Logout. Back to homepag eafter 0.1 seconds.</p><form name="homepage" action="/401-logout.html" method="get"></form></body></html>';
+    }
     location = /401-logout.html {
         auth_pam "Cloud9 Workspace";
         auth_pam_service_name "auth-common";
@@ -110,10 +115,10 @@ server {
     }
     location @return401 {
         add_header 'WWW-Authenticate' 'Basic Realm="Cloud9 Workspace"' always;
-        return 401 '<!DOCTYPE html><html><body><script>setTimeout(function(){document.homepage.submit();},3000);</script><p>Logout. Back to homepage after 3 seconds.</p><form name="homepage" action="/" method="get"></form></body></html>';
+        return 401 '<!DOCTYPE html><html><body><script>setTimeout(function(){document.homepage.submit();},100);</script><p>Logout. Back to homepage after 0.1 seconds.</p><form name="homepage" action="/200-login.html" method="get"></form></body></html>';
     }
     location @return200 {
-        return 200 '<!DOCTYPE html><html><body><script>setTimeout(function(){document.homepage.submit();},3000);</script><p>Logout. Back to homepag eafter 3 seconds.</p><form name="homepage" action="/" method="get"></form></body></html>';
+        return 200 '<!DOCTYPE html><html><body><script>setTimeout(function(){document.homepage.submit();},100);</script><p>Logout. Back to homepag eafter 0.1 seconds.</p><form name="homepage" action="/200-login.html" method="get"></form></body></html>';
     }
 
 
