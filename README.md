@@ -12,6 +12,7 @@ In this script, I use ```nginx-full``` package, please remove ```nginx``` before
 **Warning:** This script have ```apt-get upgrade -y``` in it.
 
 Run this in root console
+
 ```sh -c "$(wget -O- https://raw.githubusercontent.com/HuJK/Cloud9-hub/master/install.sh)"```
 
 And goto url : [https://your_server_ip:8443](https://your_server_ip:8443)
