@@ -75,7 +75,7 @@ server {
                 server_sock_path = remote_user .. "_" .. md5.sumhexa(ngx.var.server_sal2 .. remote_password)
                 server_sock_path = "/etc/c9/sock/c9-" .. server_sock_path .. ".sock"
                 response = ngx.location.capture('/ide.html')
-                if response.status ~= 201 then
+                if response.status ~= 200 then
                     ndcmd = "node /etc/c9/sdk/server.js --collab -p " .. server_sock_path .. " -a " .. server_auth .. " -w $HOME "
                     spcmd = "unset TMUX ;cp -rn /etc/c9/.c9 $HOME ;rm -f " .. server_sock_path .." 2>/dev/null ;tmux kill-session -t c9io ;tmux new -d -s c9io " .. ndcmd .. " ;sleep 1 ;chmod 666 " .. server_sock_path
                     spcmd_by_su = "su " .. remote_user  .. " -c '" .. spcmd .. "'"
@@ -104,31 +104,7 @@ server {
         } 
     }
     location = /200-server_check.html {
-        default_type 'text/plain';
-        add_header "Content-Type" "text/plain" always;
-        auth_pam "Cloud9 Workspace";
-        auth_pam_service_name "auth-common";
-        content_by_lua_block {
-            package.path = package.path .. ";/etc/c9/util/md5.lua"
-            local md5 = require 'md5'  
-            if ngx.var.http_authorization then
-                local tmp = ngx.var.http_authorization
-                tmp = tmp:sub(tmp:find(' ')+1)
-                tmp = ngx.decode_base64(tmp)
-                remote_user     = tmp:sub(0,tmp:find(":")-1)
-                remote_password = tmp:sub(tmp:find(':')+1)
-                server_auth      = remote_user .. ":" .. md5.sumhexa(ngx.var.server_salt .. remote_password)
-                server_sock_path = remote_user .. "_" .. md5.sumhexa(ngx.var.server_sal2 .. remote_password)
-                server_sock_path = "/etc/c9/sock/c9-" .. server_sock_path .. ".sock"
-                response = ngx.location.capture('/ide.html')
-                response_code = response.status
-                ngx.status = response_code
-                ngx.say(tostring(response_code))
-                ngx.exit(response_code)
-            else
-                ngx.say("Need auth info!")
-            end
-        } 
+        return 302 "/ide.html" ;
     }
     
     location = /200-shutdown.html {
