@@ -13,6 +13,7 @@ server {
     
     add_header Strict-Transport-Security max-age=15768000;
     set $server_salt "1!2@3=我是鹽";
+    set $server_sal2 "1!2@3=我是糖";
     # Managing literal requests to the JupyterHub front end
     location / {
         auth_pam "Cloud9 Workspace";
@@ -20,8 +21,9 @@ server {
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header Host $host;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        set $sock_path "http://unix:/etc/c9/sock/c9-${remote_user}.sock";
+        #set $sock_path "http://unix:/etc/c9/sock/c9-${remote_user}.sock";
         set $server_auth_base64 "bm9sb2dpbjpOb3RTZXRZZXQ=";
+        set $server_sock_path   "Not_Set_Yet";
         rewrite_by_lua_block {
             package.path = package.path .. ";/etc/c9/util/md5.lua"
             if ngx.var.http_authorization and ngx.var.remote_user then
@@ -31,12 +33,14 @@ server {
                 tmp = ngx.decode_base64(tmp)
                 remote_user     = tmp:sub(0,tmp:find(":")-1)
                 remote_password = tmp:sub(tmp:find(':')+1)
-                server_auth = remote_user .. ":" .. md5.sumhexa(ngx.var.server_salt .. remote_password)
+                server_auth      = remote_user .. ":" .. md5.sumhexa(ngx.var.server_salt .. remote_password)
+                server_sock_path = remote_user .. ":" .. md5.sumhexa(ngx.var.server_sal2 .. remote_password)
+                ngx.var.server_sock_path = server_sock_path
                 ngx.var.server_auth_base64 = ngx.encode_base64( server_auth )
             end
         }
         proxy_set_header Authorization "Basic ${server_auth_base64}";
-        proxy_pass $sock_path;
+        proxy_pass "http://unix:/etc/c9/sock/c9-${server_sock_path}.sock";;
         # websocket headers
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection $connection_upgrade;
@@ -56,7 +60,8 @@ server {
                 tmp = ngx.decode_base64(tmp)
                 remote_user     = tmp:sub(0,tmp:find(":")-1)
                 remote_password = tmp:sub(tmp:find(':')+1)
-                server_auth = remote_user .. ":" .. md5.sumhexa(ngx.var.server_salt .. remote_password)
+                server_auth      = remote_user .. ":" .. md5.sumhexa(ngx.var.server_salt .. remote_password)
+                server_sock_path = remote_user .. ":" .. md5.sumhexa(ngx.var.server_sal2 .. remote_password)
                 spcmd = "unset TMUX ;cp -rn /etc/c9/.c9 $HOME ;rm -f /etc/c9/sock/c9-$USER.sock 2>/dev/null ;tmux new -d -s c9io node /etc/c9/sdk/server.js -p /etc/c9/sock/c9-$USER.sock -a " .. server_auth .. " -w $HOME ;sleep 1 ;chmod 666 /etc/c9/sock/c9-$USER.sock"
                 spcmd_by_su = "su " .. remote_user  .. " -c '" .. spcmd .. "'"
                 fp = io.popen("python3 /etc/c9/util/pip2su.py " ..  spcmd_by_su ,"w")
