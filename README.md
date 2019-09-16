@@ -34,6 +34,9 @@ Ubuntu (run as root):
 ```bash
 apt-get update
 apt-get update  -y
+# The install will detect npm exist or not on the system. If exist, it will not use itself's npm
+# But in Ubuntu 19.04, npm from apt are not compatible with cloud9. So I have to remove it first, install back later.
+apt-get purge npm
 apt-get install -y nginx-full
 apt-get install -y libnginx-mod-http-auth-pam
 apt-get install -y lua5.2 lua5.2-doc liblua5.2-dev
@@ -62,6 +65,8 @@ chmod -R 755 /etc/c9/.c9
 chmod -R 755 /etc/c9/util
 chmod -R 773 /etc/c9/sock
 HOME=/root
+# Install npm back
+apt-get install -y npm
 ```
 
 Install
