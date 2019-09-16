@@ -17,6 +17,8 @@ apt-get install -y python-pip python3-pip golang default-jdk coffeescript php-cl
 apt-get install -y zsh fish tree ncdu aria2  p7zip-full python3-dev perl curl
 curl https://install.meteor.com/ | sh
 pip3 install pexpect
+pip3 install IKP3db
+pip install ikpdb
 
 mkdir /etc/c9
 mkdir /etc/c9/sock
@@ -41,6 +43,8 @@ apt-get install -y npm
 usermod -aG shadow nginx
 usermod -aG shadow www-data
 wget -O- https://raw.githubusercontent.com/HuJK/Cloud9Hub/master/c9io > /etc/nginx/sites-available/c9io
+mkdir /etc/c9/.c9/runners/
+wget https://raw.githubusercontent.com/HuJK/Cloud9-hub/master/Python%203.run -O "/etc/c9/.c9/runners/Python 3.run"
 ln -s ../sites-available/c9io /etc/nginx/sites-enabled/c9io
 cd /etc/c9
 wget -O- https://raw.githubusercontent.com/HuJK/Cloud9Hub/master/logout.patch | patch -p0
