@@ -43,11 +43,11 @@ apt-get install -y npm
 usermod -aG shadow nginx
 usermod -aG shadow www-data
 wget -O- https://raw.githubusercontent.com/HuJK/Cloud9Hub/master/c9io > /etc/nginx/sites-available/c9io
-mkdir /etc/c9/.c9/runners/
-wget https://raw.githubusercontent.com/HuJK/Cloud9-hub/master/Python%203.run -O "/etc/c9/.c9/runners/Python 3.run"
 ln -s ../sites-available/c9io /etc/nginx/sites-enabled/c9io
 cd /etc/c9
 wget -O- https://raw.githubusercontent.com/HuJK/Cloud9Hub/master/logout.patch | patch -p0
+mkdir /etc/c9/.c9/runners/
+wget https://raw.githubusercontent.com/HuJK/Cloud9-hub/master/Python%203.run -O "/etc/c9/.c9/runners/Python 3.run"
 
 apt-get install -y install openssl
 mkdir /etc/c9/cert
