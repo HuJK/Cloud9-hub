@@ -42,3 +42,7 @@ chmod 600 /etc/c9/cert
 cd /etc/c9/cert
 openssl genrsa -out ssl.key 2048
 openssl req -new -x509 -key ssl.key -out ssl.pem -days 3650 -subj /CN=localhost
+
+systemctl enable nginx
+service nginx stop
+service nginx start
