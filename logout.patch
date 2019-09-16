@@ -11,9 +11,9 @@
 -                            info.login(true);
 -                        });
 -                    }
-+                    onclick: function() { window.location = "/401-logout.html" ;    }
++                    onclick: function() { window.location = "/200-logout.html" ;    }
 +                }), c += 100, plugin);
 +                menus.addItemByPath(name + "/Stop workspace", new ui.item({
-+                    onclick: function() { window.location = "/401-shutdown.html" ;    }
++                    onclick: function() { window.location = "/200-shutdown.html" ;    }
                  }), c += 100, plugin);
              }
