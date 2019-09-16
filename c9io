@@ -52,7 +52,7 @@ server {
     location = /502-server_conn_err.html {
         auth_pam "Cloud9 Workspace";
         auth_pam_service_name "auth-common";
-        return 502 '<center><h1>Woekspace not running</h1></center><center><input type="button" value="Spawn Woekspace" onclick="window.location.href=\'/200-server_spawn.html\'" style="width:200px;height:40px;font-size:20px;"></center><hr /><center>Cloud 9 SDK (Ubuntu)</center>';
+        return 502 '<!DOCTYPE html><html><body> <center> <h1>Woekspace not running</h1></center> <center> <input type="button" value="Spawn Woekspace" onclick="window.location.href=\'/200-server_spawn.html\'" style="width:200px;height:40px;font-size:20px;"> <input type="button" value="Log out" onclick="window.location.href=\'/200-logout.html\'" style="width:100px;height:40px;font-size:20px;"> </center> <hr /> <center>Cloud 9 SDK</center></body></html>';
     } 
 
     location = /200-server_spawn.html {
@@ -78,12 +78,12 @@ server {
                     fp = io.popen("python3 /etc/c9/util/pip2su.py " ..  spcmd_by_su ,"w")
                     fp:write(remote_password)
                     fp:close()
-                    ngx.say("<center><h1>Spawning workspace</h1></center>")
-                    ngx.say("<p>If server not spawn, try to run this command in ssh console:<br>")
+                    ngx.say("<center><h1>Starting workspace</h1></center>")
+                    ngx.say("<p>If server not start, try to run this command in ssh console:<br>")
                     ngx.say("<code>")
                     ngx.say(spcmd:gsub(";", "\n"):gsub("&", "&amp;"):gsub("\"", "&quot;"):gsub("<", "&lt;"):gsub(">", "&gt;"):gsub("\n", "<br>") .. "<br>")
                     ngx.say("</code></p>")
-                    ngx.say("<p>If server still not spawn, Please run this command in ssh console, check is there any error:<br>")
+                    ngx.say("<p>If server still not start, Please run this command in ssh console, check if there has any error:<br>")
                     ngx.say("<code>")
                     ngx.say(ndcmd:gsub("\"", "&quot;"):gsub("<", "&lt;"):gsub(">", "&gt;"):gsub("&", "&amp;") .. "<br>")
                     ngx.say("</code></p>")
@@ -142,9 +142,9 @@ server {
                 fp = io.popen("python3 /etc/c9/util/pip2su.py " ..  spcmd_by_su ,"w")
                 fp:write(remote_password)
                 fp:close()
+                ngx.redirect("/ide.html")
             end
         }
-        try_files DUMMY /200-logout.html;
     }
     location = /200-login.html {
         return 200 '<!DOCTYPE html><html><body><script>setTimeout(function(){document.homepage.submit();},100);</script><p>Logout. Back to homepage after 0.1 seconds.</p><form name="homepage" action="/" method="get"></form></body></html>';
