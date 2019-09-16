@@ -35,7 +35,7 @@ cd sdk
 chmod -R 755 /etc/c9/sdk
 chmod -R 755 /etc/c9/.c9
 chmod -R 755 /etc/c9/util
-chmod -R 777 /etc/c9/sock
+chmod -R 773 /etc/c9/sock
 HOME=/root
 ```
 
