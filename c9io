@@ -24,7 +24,7 @@ server {
         #set $sock_path "http://unix:/etc/c9/sock/c9-${remote_user}.sock";
         set $server_auth_base64 "bm9sb2dpbjpOb3RTZXRZZXQ=";
         set $server_sock_path   "Not_Set_Yet";
-        rewrite_by_lua_block {
+        access_by_lua_block {
             package.path = package.path .. ";/etc/c9/util/md5.lua"
             if ngx.var.http_authorization and ngx.var.remote_user then
                 local md5 = require('md5')
@@ -38,6 +38,10 @@ server {
                 server_sock_path = "http://unix:/etc/c9/sock/c9-" .. server_sock_path .. ".sock"
                 ngx.var.server_sock_path = server_sock_path
                 ngx.var.server_auth_base64 = ngx.encode_base64( server_auth )
+                user_lgin_tokn_path = "/etc/c9/sock/c9-" .. remote_user .. "_" .. md5.sumhexa(ngx.var.server_sal2 .. remote_password) .. ".login"
+                file = assert(io.open(user_lgin_tokn_path, "w"), "Inaccessible file")
+                file:write("1")
+                file:close()
             end
         }
         proxy_set_header Authorization "Basic ${server_auth_base64}";
@@ -130,7 +134,7 @@ server {
     location = /200-shutdown.html {
         auth_pam "Cloud9 Workspace";
         auth_pam_service_name "auth-common";
-        rewrite_by_lua_block {
+        access_by_lua_block {
             if ngx.var.http_authorization and ngx.var.remote_user then
                 local tmp = ngx.var.http_authorization
                 tmp = tmp:sub(tmp:find(' ')+1)
@@ -155,6 +159,32 @@ server {
     location = /401-logout.html {
         auth_pam "Cloud9 Workspace";
         auth_pam_service_name "auth-common";
+        access_by_lua_block {
+            package.path = package.path .. ";/etc/c9/util/md5.lua"
+            if ngx.var.http_authorization and ngx.var.remote_user then
+                local md5 = require('md5')
+                local tmp = ngx.var.http_authorization
+                tmp = tmp:sub(tmp:find(' ')+1)
+                tmp = ngx.decode_base64(tmp)
+                remote_user     = tmp:sub(0,tmp:find(":")-1)
+                remote_password = tmp:sub(tmp:find(':')+1)
+                server_auth      = remote_user .. ":" .. md5.sumhexa(ngx.var.server_salt .. remote_password)
+                server_sock_path = remote_user .. "_" .. md5.sumhexa(ngx.var.server_sal2 .. remote_password)
+                server_sock_path = "http://unix:/etc/c9/sock/c9-" .. server_sock_path .. ".sock"
+                user_lgin_tokn_path = "/etc/c9/sock/c9-" .. remote_user .. "_" .. md5.sumhexa(ngx.var.server_sal2 .. remote_password) .. ".login"
+                file = io.open(user_lgin_tokn_path, "r")
+                if file ~= nil then
+                    login_status = "1"
+                    file:close()
+                    os.remove(user_lgin_tokn_path)
+                else
+                    login_status = "0"
+                end
+                if login_status == "0" then
+                    ngx.redirect("/ide.html")
+                end
+            end
+        }
         try_files DUMMY @return401;
         error_page 401 =200  @return200;
     }
