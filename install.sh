@@ -2,9 +2,11 @@
 set -x
 apt-get update
 apt-get update  -y
+# In debian, when I installed nginx, I can't install nginx-full. Because they use different version of nginx. So I have to remove nginx first.
+apt-get remove  -y nginx
 # The install script will detect npm exist or not on the system. If exist, it will not use itself's npm
 # But in Ubuntu 19.04, npm from apt are not compatible with it. So I have to remove first, and install back later.
-apt-get purge   -y  npm
+apt-get remove  -y npm
 apt-get install -y nginx-full
 apt-get install -y libnginx-mod-http-auth-pam
 apt-get install -y lua5.2 lua5.2-doc liblua5.2-dev
