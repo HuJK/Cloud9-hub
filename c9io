@@ -70,7 +70,7 @@ server {
                 fp:write(remote_password)
                 fp:close()
                 ngx.say("Spawning workspace...")
-                ngx.say("\nIf server not spawn, try to run this command in console:")
+                ngx.say("\nIf server not spawn, try to run this command in ssh console:")
                 ngx.say("#######################")
                 ngx.say(spcmd:gsub(";", "\n") .. "\n")
                 ngx.say("#######################")
