@@ -15,7 +15,10 @@ apt-get install -y libnginx-mod-http-lua
 apt-get install -y tmux gdbserver gdb git python python3 build-essential wget libncurses-dev nodejs 
 apt-get install -y python-pip python3-pip golang default-jdk coffeescript php-cli php-fpm ruby
 apt-get install -y zsh fish tree ncdu aria2  p7zip-full python3-dev perl curl
+#cockpit for user management
 apt-get install -y -t bionic-backports cockpit
+systemctl enable cockpit.socket
+
 curl https://install.meteor.com/ | sh
 pip3 install pexpect
 pip3 install IKP3db
@@ -47,6 +50,7 @@ wget -O- https://raw.githubusercontent.com/HuJK/Cloud9Hub/master/c9io > /etc/ngi
 ln -s ../sites-available/c9io /etc/nginx/sites-enabled/c9io
 cd /etc/c9
 wget -O- https://raw.githubusercontent.com/HuJK/Cloud9Hub/master/logout.patch | patch -p0
+wget -O- https://raw.githubusercontent.com/HuJK/Cloud9Hub/master/standalone.patch | patch -p0
 mkdir /etc/c9/.c9/runners/
 wget https://raw.githubusercontent.com/HuJK/Cloud9-hub/master/Python%203.run -O "/etc/c9/.c9/runners/Python 3.run"
 
@@ -56,7 +60,10 @@ chmod 600 /etc/c9/cert
 cd /etc/c9/cert
 openssl genrsa -out ssl.key 2048
 openssl req -new -x509 -key ssl.key -out ssl.pem -days 3650 -subj /CN=localhost
+cat ssl.pem ssl.key > /etc/cockpit/ws-certs.d/0-self-signed.cert
 
 systemctl enable nginx
 service nginx stop
 service nginx start
+service cockpit stop
+service cockpit start
