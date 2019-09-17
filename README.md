@@ -45,6 +45,9 @@ apt-get install -y libnginx-mod-http-lua
 apt-get install -y tmux gdbserver gdb git python python3 build-essential wget libncurses-dev nodejs 
 apt-get install -y python-pip python3-pip golang default-jdk coffeescript php-cli php-fpm ruby
 apt-get install -y zsh fish tree ncdu aria2  p7zip-full python3-dev perl curl
+#cockpit for user management
+apt-get install -y -t bionic-backports cockpit
+systemctl enable cockpit.socket
 curl https://install.meteor.com/ | sh
 pip3 install pexpect
 
@@ -97,20 +100,22 @@ chmod 600 /etc/c9/cert
 cd /etc/c9/cert
 openssl genrsa -out ssl.key 2048
 openssl req -new -x509 -key ssl.key -out ssl.pem -days 3650 -subj /CN=localhost
+cat ssl.pem ssl.key > /etc/cockpit/ws-certs.d/0-self-signed.cert
 ```
 
 ##### 2. Use valid ssl certificates
 
 1. Buy or get a free domain
 2. Get a valid certificate from letsencrypt
-3. Edit line 10~11
+3. put your ssl cert and key at following path
 ```
     ssl_certificate     /etc/c9/cert/ssl.pem;
     ssl_certificate_key /etc/c9/cert/ssl.key;
 ```
-to your certificate and keys.
-
-
+4. configure ssl kwy for cockpit
+```
+cat ssl.pem ssl.key > /etc/cockpit/ws-certs.d/0-self-signed.cert
+```
 
 ##### 3. Change port number(if you want)
 Edit line 8~9
