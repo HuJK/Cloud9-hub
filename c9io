@@ -23,8 +23,8 @@ server {
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         #set $sock_path "http://unix:/etc/c9/sock/c9-${remote_user}.sock";
         set $server_auth_base64 "bm9sb2dpbjpOb3RTZXRZZXQ=";
-        set $server_sock_path   "Not_Set_Yet";
-        access_by_lua_block {
+        set $server_sock_url   "Not_Set_Yet";
+        rewrite_by_lua_block {
             package.path = package.path .. ";/etc/c9/util/md5.lua"
             if ngx.var.http_authorization and ngx.var.remote_user then
                 local md5 = require('md5')
@@ -34,18 +34,23 @@ server {
                 remote_user     = tmp:sub(0,tmp:find(":")-1)
                 remote_password = tmp:sub(tmp:find(':')+1)
                 server_auth      = remote_user .. ":" .. md5.sumhexa(ngx.var.server_salt .. remote_password)
-                server_sock_path = remote_user .. "_" .. md5.sumhexa(ngx.var.server_sal2 .. remote_password)
-                server_sock_path = "http://unix:/etc/c9/sock/c9-" .. server_sock_path .. ".sock"
-                ngx.var.server_sock_path = server_sock_path
+                server_sock_name = remote_user .. "_" .. md5.sumhexa(ngx.var.server_sal2 .. remote_password)
+                server_sock_path = "/etc/c9/sock/c9-" .. server_sock_name .. ".sock"
+                server_sock_url  = "http://unix:" .. server_sock_path
+                ngx.var.server_sock_url = server_sock_url
                 ngx.var.server_auth_base64 = ngx.encode_base64( server_auth )
-                user_lgin_tokn_path = "/etc/c9/sock/c9-" .. remote_user .. "_" .. md5.sumhexa(ngx.var.server_sal2 .. remote_password) .. ".login"
-                file = assert(io.open(user_lgin_tokn_path, "w"), "Inaccessible file")
-                file:write("1")
-                file:close()
+                sockfile = io.open(server_sock_path,"r")
+                if sockfile~=nil then
+                    sockfile:close()
+                    user_lgin_tokn_path = "/etc/c9/sock/c9-" .. remote_user .. "_" .. md5.sumhexa(ngx.var.server_sal2 .. remote_password) .. ".login"
+                    lginfile = assert(io.open(user_lgin_tokn_path, "w"), "Inaccessible file")
+                    lginfile:write("1")
+                    lginfile:close()
+                end
             end
         }
         proxy_set_header Authorization "Basic ${server_auth_base64}";
-        proxy_pass $server_sock_path;
+        proxy_pass $server_sock_url;
         # websocket headers
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection $connection_upgrade;
@@ -56,12 +61,14 @@ server {
     location = /502-server_conn_err.html {
         auth_pam "Cloud9 Workspace";
         auth_pam_service_name "auth-common";
-        return 502 '<!DOCTYPE html><html><body> <center> <h1>Woekspace not running</h1></center> <center> <input type="button" value="Spawn Woekspace" onclick="window.location.href=\'/200-server_spawn.html\'" style="width:200px;height:40px;font-size:20px;"> <input type="button" value="Log out" onclick="window.location.href=\'/200-logout.html\'" style="width:100px;height:40px;font-size:20px;"> </center> <hr /> <center>Cloud 9 SDK</center></body></html>';
+        return 502 '<!DOCTYPE html><html><body> <center> <h1>Woekspace not running</h1></center> <center> <input type="button" value="Spawn Woekspace" onclick="window.location.href=\'/200-server_spawn.html\'" style="width:200px;height:40px;font-size:20px;"> <input type="button" value="Log out" onclick="window.location.href=\'/200-logout.html\'" style="width:100px;height:40px;font-size:20px;"> </center> <hr /> <center>Cloud 9 SDK</center></body><script>window.onload = function() { setInterval(function(){ var xhttp = new XMLHttpRequest(); xhttp.onreadystatechange = function() { if (this.status == 200) { window.location.replace("/ide.html"); } }; xhttp.open("GET", "/ide.html", true); xhttp.send();},1000);};</script></html>';
     } 
 
     location = /200-server_spawn.html {
         default_type 'text/html';
         add_header "Content-Type" "text/html" always;
+        auth_pam "Cloud9 Workspace";
+        auth_pam_service_name "auth-common";
         content_by_lua_block {
             package.path = package.path .. ";/etc/c9/util/md5.lua"
             local md5 = require 'md5'  
@@ -72,8 +79,8 @@ server {
                 remote_user     = tmp:sub(0,tmp:find(":")-1)
                 remote_password = tmp:sub(tmp:find(':')+1)
                 server_auth      = remote_user .. ":" .. md5.sumhexa(ngx.var.server_salt .. remote_password)
-                server_sock_path = remote_user .. "_" .. md5.sumhexa(ngx.var.server_sal2 .. remote_password)
-                server_sock_path = "/etc/c9/sock/c9-" .. server_sock_path .. ".sock"
+                server_sock_name = remote_user .. "_" .. md5.sumhexa(ngx.var.server_sal2 .. remote_password)
+                server_sock_path = "/etc/c9/sock/c9-" .. server_sock_name .. ".sock"
                 response = ngx.location.capture('/ide.html')
                 if response.status ~= 200 then
                     ndcmd = "node /etc/c9/sdk/server.js --collab -p " .. server_sock_path .. " -a " .. server_auth .. " -w $HOME "
@@ -94,7 +101,7 @@ server {
                     ngx.say("<p>You can check Cloud9 workspace status by this command: <br><code>tmux a -t c9io</code><br></p>")
                     ngx.say("<hr />")
                     ngx.say("<br>Please refresh this page after a few seconds.<br>")
-                    ngx.say('<script>window.onload = function() { setInterval(function(){ var xhttp = new XMLHttpRequest(); xhttp.onreadystatechange = function() { if (this.status == 200) { window.location.replace("/ide.html"); } }; xhttp.open("GET", "/200-server_check.html", true); xhttp.send();},1000);};</script>')
+                    ngx.say('<script>window.onload = function() { setInterval(function(){ var xhttp = new XMLHttpRequest(); xhttp.onreadystatechange = function() { if (this.status == 200) { window.location.replace("/ide.html"); } }; xhttp.open("GET", "/ide.html", true); xhttp.send();},1000);};</script>')
                 else
                     ngx.redirect("/ide.html")
                 end
@@ -102,9 +109,6 @@ server {
                 ngx.say("Need auth info!")
             end
         } 
-    }
-    location = /200-server_check.html {
-        return 302 "/ide.html" ;
     }
     
     location = /200-shutdown.html {
@@ -144,14 +148,12 @@ server {
                 tmp = ngx.decode_base64(tmp)
                 remote_user     = tmp:sub(0,tmp:find(":")-1)
                 remote_password = tmp:sub(tmp:find(':')+1)
-                server_auth      = remote_user .. ":" .. md5.sumhexa(ngx.var.server_salt .. remote_password)
-                server_sock_path = remote_user .. "_" .. md5.sumhexa(ngx.var.server_sal2 .. remote_password)
-                server_sock_path = "http://unix:/etc/c9/sock/c9-" .. server_sock_path .. ".sock"
-                user_lgin_tokn_path = "/etc/c9/sock/c9-" .. remote_user .. "_" .. md5.sumhexa(ngx.var.server_sal2 .. remote_password) .. ".login"
-                file = io.open(user_lgin_tokn_path, "r")
-                if file ~= nil then
+                server_sock_name = remote_user .. "_" .. md5.sumhexa(ngx.var.server_sal2 .. remote_password)
+                user_lgin_tokn_path = "/etc/c9/sock/c9-" .. server_sock_name .. ".login"
+                lginfile = io.open(user_lgin_tokn_path, "r")
+                if lginfile ~= nil then
                     login_status = "1"
-                    file:close()
+                    lginfile:close()
                     os.remove(user_lgin_tokn_path)
                 else
                     login_status = "0"
@@ -178,4 +180,3 @@ server {
         allow all;
     }
 }
-
