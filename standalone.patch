@@ -1,0 +1,16 @@
+--- c9sdk/settings/standalone.js        2019-09-15 20:31:25.995873567 +0800
++++ sdk/settings/standalone.js  2019-09-17 15:41:06.344396665 +0800
+@@ -63,10 +63,10 @@
+         correctedInstallPath: correctedInstallPath,
+         staticPrefix: "/static",
+         projectUrl: "/workspace",
+-        ideBaseUrl: "http://c9.io",
++        ideBaseUrl: "/",
+         previewUrl: "/preview",
+-        dashboardUrl: "https://c9.io/dashboard.html",
+-        accountUrl: "https://c9.io/account",
++        dashboardUrl: "/200-dashboard.html",
++        accountUrl: "/200-account.html",
+         apiUrl: "/api",
+         homeUrl: "/home",
+         collab: false,
