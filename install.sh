@@ -2,7 +2,7 @@
 set -x
 echo "update phase"
 apt-get update
-apt-get update  -y
+apt-get upgrade  -y
 # In debian, when I installed nginx, I can't install nginx-full. Because they use different version of nginx. So I have to remove nginx first.
 apt-get remove  -y nginx
 # The install script will detect npm exist or not on the system. If exist, it will not use itself's npm
