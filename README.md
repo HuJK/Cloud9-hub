@@ -11,7 +11,7 @@ This is an nginx reverse proxy config which will try to authenticate user:passwo
 
 Run this in root console
 
-```sh -c "$(wget -O- https://raw.githubusercontent.com/HuJK/Cloud9-hub/master/install.sh)"```
+```sudo sh -c "$(wget -O- https://raw.githubusercontent.com/HuJK/Cloud9-hub/master/install.sh)"```
 
 And goto url : [https://your_server_ip:8443](https://your_server_ip:8443)
 
