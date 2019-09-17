@@ -3,7 +3,7 @@
 {
   "script": [
     "if [ \"$debug\" == true ]; then ",
-    "    python3 -m ikp3db --ikpdb-port=15471 --ikpdb-working-directory=$project_path \"$file\" $args",
+    "    python3 -m ikp3db --ikpdb-port=15472 --ikpdb-working-directory=$project_path \"$file\" $args",
     "else",
     "   python3 \"$file\" $args",
     "fi",
@@ -20,7 +20,7 @@
     "}",
     "checkExitCode $?"
   ],
-  "debugport": 15471,
+  "debugport": 15472,
   "$debugDefaultState": false,
   "debugger": "pythondebug",
   "selector": "^.*\\.(python|py)$",
