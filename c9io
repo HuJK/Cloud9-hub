@@ -21,7 +21,6 @@ server {
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header Host $host;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        #set $sock_path "http://unix:/etc/c9/sock/c9-${remote_user}.sock";
         set $server_auth_base64 "bm9sb2dpbjpOb3RTZXRZZXQ=";
         set $server_sock_url   "Not_Set_Yet";
         rewrite_by_lua_block {
@@ -39,14 +38,9 @@ server {
                 server_sock_url  = "http://unix:" .. server_sock_path
                 ngx.var.server_sock_url = server_sock_url
                 ngx.var.server_auth_base64 = ngx.encode_base64( server_auth )
-                sockfile = io.open(server_sock_path,"r")
-                if sockfile~=nil then
-                    sockfile:close()
-                    user_lgin_tokn_path = "/etc/c9/sock/c9-" .. remote_user .. "_" .. md5.sumhexa(ngx.var.server_sal2 .. remote_password) .. ".login"
-                    lginfile = assert(io.open(user_lgin_tokn_path, "w"), "Inaccessible file")
-                    lginfile:write("1")
-                    lginfile:close()
-                end
+                fp = io.popen("python3 /etc/c9/util/create_login.py","w")
+                fp:write(server_sock_path)
+                fp:close()
             end
         }
         proxy_set_header Authorization "Basic ${server_auth_base64}";
@@ -130,11 +124,47 @@ server {
             end
         }
     }
-    location = /200-login.html {
-        return 200 '<!DOCTYPE html><html><body><script>setTimeout(function(){document.homepage.submit();},100);</script><p>Logout. Back to homepage after 0.1 seconds.</p><form name="homepage" action="/" method="get"></form></body></html>';
-    }
+
     location = /200-logout.html {
+        add_header Set-Cookie "cockpit=disabled; Path=/;  Secure; HttpOnly" ;
         return 200 '<!DOCTYPE html><html><body><script>setTimeout(function(){document.homepage.submit();},100);</script><p>Logout. Back to homepage after 0.1 seconds.</p><form name="homepage" action="/401-logout.html" method="get"></form></body></html>';
+    }
+
+
+    location = /cockpit/login {
+        internal;
+        proxy_pass "https://localhost:9090" ;
+    }
+
+    location = /302-dashboard.html {
+        auth_pam "Cloud9 Workspace";
+        auth_pam_service_name "auth-common";
+        set $cookie "Not_Set_Yet";
+        access_by_lua_block {
+            response = ngx.location.capture('/cockpit/login')
+            ngx.var.cookie = response.header["Set-Cookie"]
+        }
+        header_filter_by_lua_block {
+            ngx.header["Set-Cookie"] = ngx.var.cookie
+        }
+        content_by_lua_block {
+            ngx.redirect("https://" .. ngx.var.host .. ":9090/system")
+        }
+    }
+    location = /302-account.html {
+        auth_pam "Cloud9 Workspace";
+        auth_pam_service_name "auth-common";
+        set $cookie "Not_Set_Yet";
+        access_by_lua_block {
+            response = ngx.location.capture('/cockpit/login')
+            ngx.var.cookie = response.header["Set-Cookie"]
+        }
+        header_filter_by_lua_block {
+            ngx.header["Set-Cookie"] = ngx.var.cookie
+        }
+        content_by_lua_block {
+            ngx.redirect("https://" .. ngx.var.host .. ":9090/users#/" .. ngx.var.remote_user)
+        }
     }
     location = /401-logout.html {
         auth_pam "Cloud9 Workspace";
@@ -166,12 +196,15 @@ server {
         try_files DUMMY @return401;
         error_page 401 =200  @return200;
     }
+    location @test {
+        return 200 "testttt";
+    }
     location @return401 {
         add_header 'WWW-Authenticate' 'Basic Realm="Cloud9 Workspace"' always;
-        return 401 '<!DOCTYPE html><html><body><script>setTimeout(function(){document.homepage.submit();},100);</script><p>Logout. Back to homepage after 0.1 seconds.</p><form name="homepage" action="/200-login.html" method="get"></form></body></html>';
+        return 401 '<!DOCTYPE html><html><body><script>setTimeout(function(){document.homepage.submit();},100);</script><p>Logout. Back to homepage after 0.1 seconds.</p><form name="homepage" action="/ide.html" method="get"></form></body></html>';
     }
     location @return200 {
-        return 200 '<!DOCTYPE html><html><body><script>setTimeout(function(){document.homepage.submit();},100);</script><p>Logout. Back to homepage after 0.1 seconds.</p><form name="homepage" action="/200-login.html" method="get"></form></body></html>';
+        return 200 '<!DOCTYPE html><html><body><script>setTimeout(function(){document.homepage.submit();},100);</script><p>Logout. Back to homepage after 0.1 seconds.</p><form name="homepage" action="/ide.html" method="get"></form></body></html>';
     }
 
 
