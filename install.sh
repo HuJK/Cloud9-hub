@@ -15,6 +15,7 @@ apt-get install -y libnginx-mod-http-lua
 apt-get install -y tmux gdbserver gdb git python python3 build-essential wget libncurses-dev nodejs 
 apt-get install -y python-pip python3-pip golang default-jdk coffeescript php-cli php-fpm ruby
 apt-get install -y zsh fish tree ncdu aria2  p7zip-full python3-dev perl curl
+apt-get install -y -t bionic-backports cockpit
 curl https://install.meteor.com/ | sh
 pip3 install pexpect
 pip3 install IKP3db
