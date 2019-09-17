@@ -50,7 +50,7 @@ apt-get install -y -t bionic-backports cockpit cockpit-pcp
 ```
 Preinstall (common):
 --
-```
+```bash
 curl https://install.meteor.com/ | sh
 pip3 install pexpect
 pip3 install IKP3db
@@ -145,7 +145,7 @@ Edit line 8~9
 from 8443 to other ports that you prefer.
 
 Now, reload services with 
-```
+```bash
 echo "restart nginx and cockpit"
 systemctl enable nginx
 systemctl enable cockpit.socket
