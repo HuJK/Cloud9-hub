@@ -25,10 +25,9 @@ demo02|demo)@
 demo03|demo)#
 
 # Manual install 
-Prenstall
---
 
-Ubuntu (run as root):
+## Preinstall 
+## Ubuntu, please install equivalent package if you use different distro): 
 ```bash
 echo "update phase"
 apt-get update
@@ -49,6 +48,10 @@ apt-get install -y python-pip python3-pip golang default-jdk coffeescript php-cl
 apt-get install -y zsh fish tree ncdu aria2  p7zip-full python3-dev perl curl
 #cockpit for user management
 apt-get install -y -t bionic-backports cockpit cockpit-pcp
+```
+Preinstall (common):
+--
+```
 curl https://install.meteor.com/ | sh
 pip3 install pexpect
 pip3 install IKP3db
