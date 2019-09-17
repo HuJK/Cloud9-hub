@@ -31,11 +31,12 @@ demo03|demo)#
 echo "update phase"
 apt-get update
 apt-get upgrade  -y
-# In debian, when I installed nginx, I can't install nginx-full. Because they use different version of nginx. So I have to remove nginx first.
+# In my distro(debian 10), It seems nginx and nginx-full are not compatible. I have to remove nginx than I can install nginx-full.
 apt-get remove  -y nginx
 # The install script will detect npm exist or not on the system. If exist, it will not use itself's npm
 # But in Ubuntu 19.04, npm from apt are not compatible with it. So I have to remove first, and install back later.
 apt-get remove  -y npm
+apt-get autoremove -y
 echo "install dependanse phase"
 apt-get install -y nginx-full
 apt-get install -y libnginx-mod-http-auth-pam
@@ -94,9 +95,9 @@ usermod -aG shadow www-data
 echo "install Cloud9-hub to nginx config"
 wget -O- https://raw.githubusercontent.com/HuJK/Cloud9Hub/master/c9io > /etc/nginx/sites-available/c9io
 ln -s ../sites-available/c9io /etc/nginx/sites-enabled/c9io
-cd /etc/c9
 
 echo "patch for login logout account and dashboard"
+cd /etc/c9
 wget -O- https://raw.githubusercontent.com/HuJK/Cloud9Hub/master/logout.patch | patch -p0
 wget -O- https://raw.githubusercontent.com/HuJK/Cloud9Hub/master/standalone.patch | patch -p0
 echo "patch for python3"
