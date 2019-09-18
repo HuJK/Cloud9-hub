@@ -3,13 +3,14 @@ set -e
 echo "###update phase###"
 apt-get update
 apt-get upgrade -y
+set +e
 # In my distro(debian 10), It seems nginx and nginx-full are not compatible. I have to remove nginx than I can install nginx-full.
 apt-get remove -y nginx
 # The install script will detect npm exist or not on the system. If exist, it will not use itself's npm
 # But in Ubuntu 19.04, npm from apt are not compatible with it. So I have to remove first, and install back later.
 apt-get remove -y npm
 apt-get autoremove -y
-
+set -e
 echo "###install dependanse phase###"
 apt-get install -y nginx-full
 apt-get install -y libnginx-mod-http-auth-pam
@@ -18,19 +19,19 @@ apt-get install -y luajit
 apt-get install -y libnginx-mod-http-lua
 apt-get install -y tmux gdbserver gdb git python python3 build-essential wget libncurses-dev nodejs 
 apt-get install -y python-pip python3-pip golang default-jdk coffeescript php-cli php-fpm ruby
-apt-get install -y zsh fish tree ncdu aria2  p7zip-full python3-dev perl curl
+apt-get install -y zsh fish tree ncdu aria2 p7zip-full python3-dev perl curl
+set +e # folling command only have one will success
 #cockpit for user management
-apt-get install -y -t bionic-backports cockpit cockpit-pcp
+apt-get install -y -t bionic-backports cockpit cockpit-pcp #for ubuntu 18.04
+apt-get install -y cockpit cockpit-pcp                     #for ubuntu 19.04
+set -e
 curl https://install.meteor.com/ | sh
 pip3 install pexpect
 pip3 install IKP3db
 pip install ikpdb
 
-echo "###removing /etc/c9 if exists###"
-WORKING_DIR=/etc/c9
-if [ -d "$WORKING_DIR" ]; then rm -Rf $WORKING_DIR; fi
-
 echo "###create folder structure###"
+rm -rf /etc/c9 || true
 mkdir /etc/c9
 mkdir /etc/c9/sock
 mkdir /etc/c9/util
@@ -56,18 +57,11 @@ HOME=/root
 
 # Install npm back
 apt-get install -y npm
-
-echo "###checking username if exists###"
-id -u nginx &>/dev/null || useradd nginx
-id -u www-data &>/dev/null || useradd www-data
-
+set +e 
 echo "###add nginx to shadow to make pam_module work###"
 usermod -aG shadow nginx
 usermod -aG shadow www-data
-
-echo "###removing Cloud9-hub to nginx config if exists###"
-rm -f /etc/nginx/sites-available/c9io
-
+set -e 
 echo "###install Cloud9-hub to nginx config###"
 wget -O- https://raw.githubusercontent.com/HuJK/Cloud9Hub/master/c9io > /etc/nginx/sites-available/c9io
 ln -sfn ../sites-available/c9io /etc/nginx/sites-enabled/c9io
@@ -79,19 +73,12 @@ wget -O- https://raw.githubusercontent.com/HuJK/Cloud9Hub/master/standalone.patc
 echo "###patch for python3###"
 mkdir -p /etc/c9/.c9/runners/
 wget https://raw.githubusercontent.com/HuJK/Cloud9-hub/master/Python%203.run -O "/etc/c9/.c9/runners/Python 3.run"
-
-echo "###manually installing openssl v1.1.1a###"
-wget https://www.openssl.org/source/openssl-1.1.1a.tar.gz
-tar -zxf openssl-1.1.1a.tar.gz && cd openssl-1.1.1a
-./config
-make 
-mv /usr/bin/openssl ~/tmp
-make install
-ln -s /usr/local/bin/openssl /usr/bin/openssl
-ldconfig
-openssl version
-
+set +e
 echo "###generate self signed cert###"
+echo "###You should buy or get a valid ssl certs           ###"
+echo "###Now I generate a self singed certs in /etc/c9/cert###"
+echo "###But you should replace it with valid a ssl certs  ###"
+apt-get install -y install openssl
 mkdir /etc/c9/cert
 chmod 600 /etc/c9/cert
 cd /etc/c9/cert
