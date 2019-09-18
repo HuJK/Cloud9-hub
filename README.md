@@ -26,7 +26,7 @@ demo03|demo)#
 
 # Manual install 
 
-## Preinstall (for Ubuntu, please install equivalent package if you use different distro): 
+## Preinstall (for Ubuntu. If you use different distro, please install equivalent package ): 
 ```bash
 echo "update phase"
 apt-get update
