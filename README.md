@@ -1,12 +1,12 @@
 # Cloud9 Hub
-Simple hub page for Cloud9 SDK. Each user has one workspace, authenticate with linux pam module.
+Simple hub page for [https://github.com/c9/core](Cloud9 SDK) for multiuser. 
 
-This is an nginx reverse proxy config which will try to authenticate user:password with linux pam module ,and try to execute command to spawn a cloud9 workspace by that user, and then proxy_pass to it.
-
-## Usage:
-Login with your **linux account** and password. It use linux pam module directly.
+Each user has one workspace, login with your **linux account** and password.
 
 If you want add user, type ```sudo adduser``` in command line. Make sure you are a sudoer.
+
+## What is this
+This is an nginx reverse proxy config which will try to authenticate user:password with linux pam module ,and try to execute command to spawn a cloud9 workspace by that user, and then proxy_pass to it.
 
 ## Script install for Ubuntu 18.04
 **Warning:** This script will reinstall your nginx and npm.
