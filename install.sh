@@ -78,6 +78,8 @@ echo "###generate self signed cert###"
 echo "###You should buy or get a valid ssl certs           ###"
 echo "###Now I generate a self singed certs in /etc/c9/cert###"
 echo "###But you should replace it with valid a ssl certs  ###"
+echo '###Remember update your cert for cockpit too!        ###'
+echo '### cat ssl.pem ssl.key > /etc/cockpit/ws-certs.d/0-self-signed.cert###'
 apt-get install -y install openssl
 mkdir /etc/c9/cert
 chmod 600 /etc/c9/cert
