@@ -11,6 +11,9 @@ server {
     ssl_certificate_key /etc/c9/cert/ssl.key;
     server_name default_server;
     
+    set $cockpit_addr "https://${host}:9090";
+    set $cockpit_addr_internal "https://127.0.0.1:9090";
+    
     add_header Strict-Transport-Security max-age=15768000;
     set $server_salt "1!2@3=我是鹽";
     set $server_sal2 "1!2@3=我是糖";
@@ -76,7 +79,7 @@ server {
                 server_sock_name = remote_user .. "_" .. md5.sumhexa(ngx.var.server_sal2 .. remote_password)
                 server_sock_path = "/etc/c9/sock/c9-" .. server_sock_name .. ".sock"
                 response = ngx.location.capture('/ide.html')
-                if response.status ~= 200 then
+                if response.status < 400 then
                     ndcmd = "node /etc/c9/sdk/server.js --collab -p " .. server_sock_path .. " -a " .. server_auth .. " -w $HOME "
                     spcmd = "unset TMUX ;cp -rn /etc/c9/.c9 $HOME ;rm -f " .. server_sock_path .." 2>/dev/null ;tmux kill-session -t c9io ;tmux new -d -s c9io " .. ndcmd .. " ;sleep 1 ;chmod 666 " .. server_sock_path
                     spcmd_by_su = "su " .. remote_user  .. " -c '" .. spcmd .. "'"
@@ -97,7 +100,7 @@ server {
                     ngx.say("<p>You can check Cloud9 workspace status by this command: <br><code>tmux a -t c9io</code><br></p>")
                     ngx.say("<hr />")
                     ngx.say("<br>Please refresh this page after a few seconds.<br>")
-                    ngx.say('<script>window.onload = function() { setInterval(function(){ var xhttp = new XMLHttpRequest(); xhttp.onreadystatechange = function() { if (this.status == 200) { window.location.replace("/ide.html"); } }; xhttp.open("GET", "/ide.html", true); xhttp.send();},1000);};</script>')
+                    ngx.say('<script>window.onload = function() { setInterval(function(){ var xhttp = new XMLHttpRequest(); xhttp.onreadystatechange = function() { if (this.status < 400) { window.location.replace("/ide.html"); } }; xhttp.open("GET", "/ide.html", true); xhttp.send();},1000);};</script>')
                     ngx.say('</body>')
                 else
                     ngx.redirect("/ide.html")
@@ -136,37 +139,53 @@ server {
 
     location = /cockpit/login {
         internal;
-        proxy_pass "https://localhost:9090" ;
+        proxy_pass $cockpit_addr_internal ;
     }
 
     location = /302-dashboard.html {
+        add_header "Content-Type" "text/plain" always;
         auth_pam "Cloud9 Workspace";
         auth_pam_service_name "auth-common";
-        set $cookie "Not_Set_Yet";
+        set $cookie "cockpit_status=failed";
         access_by_lua_block {
             response = ngx.location.capture('/cockpit/login')
-            ngx.var.cookie = response.header["Set-Cookie"]
+            if response.status < 400 then
+                ngx.var.cookie = response.header["Set-Cookie"]
+            end
         }
         header_filter_by_lua_block {
             ngx.header["Set-Cookie"] = ngx.var.cookie
         }
         content_by_lua_block {
-            ngx.redirect("https://" .. ngx.var.host .. ":9090/system")
+            if ngx.var.cookie ~= "cockpit_status=failed" then
+                ngx.redirect(ngx.var.cockpit_addr .. "/system")
+            else
+                ngx.status = 502
+                ngx.say("Connect to cockpit failed.")
+            end
         }
     }
     location = /302-account.html {
+        add_header "Content-Type" "text/plain" always;
         auth_pam "Cloud9 Workspace";
         auth_pam_service_name "auth-common";
-        set $cookie "Not_Set_Yet";
+        set $cookie "cockpit_status=failed";
         access_by_lua_block {
             response = ngx.location.capture('/cockpit/login')
-            ngx.var.cookie = response.header["Set-Cookie"]
+            if response.status < 400 then
+                ngx.var.cookie = response.header["Set-Cookie"]
+            end
         }
         header_filter_by_lua_block {
             ngx.header["Set-Cookie"] = ngx.var.cookie
         }
         content_by_lua_block {
-            ngx.redirect("https://" .. ngx.var.host .. ":9090/users#/" .. ngx.var.remote_user)
+            if ngx.var.cookie ~= "cockpit_status=failed" then
+                ngx.redirect(ngx.var.cockpit_addr .. "/users#/" .. ngx.var.remote_user)
+            else
+                ngx.status = 502
+                ngx.say("Connect to cockpit failed.")
+            end
         }
     }
     location = /401-logout.html {
