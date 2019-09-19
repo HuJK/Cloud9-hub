@@ -1,5 +1,5 @@
 # Cloud9 Hub
-Simple hub page for [https://github.com/c9/core](Cloud9 SDK) for multiuser. 
+Simple hub page for [https://github.com/c9/core](Cloud9%20SDK) for multiuser. 
 
 Each user has one workspace, login with your **linux account** and password.
 
