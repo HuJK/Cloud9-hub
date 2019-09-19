@@ -13,7 +13,7 @@ If you want add user, type ```sudo adduser``` in command line. Make sure you are
 
 **Warning:** This script will upgrade your system by ```apt-get upgrade -y``` command.
 
-Run this in root console
+Run this in terminal
 
 ```sudo sh -c "$(wget -O- https://raw.githubusercontent.com/HuJK/Cloud9-hub/master/install.sh)"```
 
