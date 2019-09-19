@@ -11,7 +11,7 @@ server {
     ssl_certificate_key /etc/c9/cert/ssl.key;
     server_name default_server;
     
-    set $cockpit_addr "https://${host}:9090";
+    set $cockpit_addr "https://${host}:2096";
     set $cockpit_addr_internal "https://127.0.0.1:9090";
     
     add_header Strict-Transport-Security max-age=15768000;
@@ -52,13 +52,13 @@ server {
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection $connection_upgrade;
         # if proxy_pass to workspace failed, spawn workspace 
-        error_page 502 /502-server_conn_err.html;
+        error_page 502 =404 /502-server_conn_err.html;
     }
     
     location = /502-server_conn_err.html {
         auth_pam "Cloud9 Workspace";
         auth_pam_service_name "auth-common";
-        return 502 '<!DOCTYPE html><html><head><style>*{font-family: Microsoft JhengHei;}.button { display: inline-block; padding: 15px 25px; font-size: 24px; cursor: pointer; text-align: center; text-decoration: none; outline: none; color: #fff; background-color: #4CAF50; border: 10px; border-radius: 15px; box-shadow: 0 9px #999;}.button:hover {background-color: #3e8e41}.button:active { background-color: #3e8e41; box-shadow: 0 5px #666; transform: translateY(4px);}</style></head><body> <center> <h1>Woekspace not running</h1></center> <center> <input type="button" class="button" value="Spawn Woekspace" onclick="window.location.href=\'/200-server_spawn.html\'" style="width:220px;height:60px;font-size:20px;"> <input type="button" class="button" value="Log out" onclick="window.location.href=\'/200-logout.html\'" style="width:120px;height:60px;font-size:20px;"> </center> <hr style="visibility: hidden;" /> <hr /> <center>Cloud 9 SDK</center></body></html>';
+        return 404 '<!DOCTYPE html><html><head><style>*{font-family: Microsoft JhengHei;}.button { display: inline-block; padding: 15px 25px; font-size: 24px; cursor: pointer; text-align: center; text-decoration: none; outline: none; color: #fff; background-color: #4CAF50; border: 10px; border-radius: 15px; box-shadow: 0 9px #999;}.button:hover {background-color: #3e8e41}.button:active { background-color: #3e8e41; box-shadow: 0 5px #666; transform: translateY(4px);}</style></head><body> <center> <h1>Woekspace not running</h1></center> <center> <input type="button" class="button" value="Spawn Woekspace" onclick="window.location.href=\'/200-server_spawn.html\'" style="width:220px;height:60px;font-size:20px;"> <input type="button" class="button" value="Log out" onclick="window.location.href=\'/200-logout.html\'" style="width:120px;height:60px;font-size:20px;"> </center> <hr style="visibility: hidden;" /> <hr /> <center>Cloud 9 SDK</center></body></html>';
     } 
 
     location = /200-server_spawn.html {
@@ -101,7 +101,7 @@ server {
                     ngx.say("<p>You can check Cloud9 workspace status by this command: <br><code>tmux a -t c9io</code><br></p>")
                     ngx.say("<hr />")
                     ngx.say("<br>Please refresh this page after a few seconds.<br>")
-                    ngx.say('<script>window.onload = function() { setInterval(function(){ var xhttp = new XMLHttpRequest(); xhttp.onreadystatechange = function() { if (this.status < 400) { window.location.replace("/ide.html"); } }; xhttp.open("GET", "/ide.html", true); xhttp.send();},1000);};</script>')
+                    ngx.say('<script>window.onload = function() { setInterval(function(){ var xhttp = new XMLHttpRequest(); xhttp.onreadystatechange = function() { if (xhttp.status < 400 && xhttp.status >= 200) { window.location.replace("/ide.html"); } }; xhttp.open("GET", "/ide.html", true); xhttp.send();},1000);};</script>')
                     ngx.say('</body>')
                 else
                     ngx.redirect("/ide.html")
