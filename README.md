@@ -3,8 +3,8 @@ Simple hub page for Cloud9 SDK. Each user has one workspace, authenticate with l
 
 This is an nginx reverse proxy config which will try to authenticate user:password with linux pam module ,and try to execute command to spawn a cloud9 workspace by that user, and then proxy_pass to it.
 
-# How to use:
-Login with your linux username and password. It use linux pam module directly.
+## Usage:
+Login with your **linux account** and password. It use linux pam module directly.
 
 If you want add user, type ```sudo adduser``` in command line. Make sure you are a sudoer.
 
@@ -28,9 +28,9 @@ demo01|demo)!
 demo02|demo)@
 demo03|demo)#
 
-# Manual install 
+## Manual install 
 
-## Preinstall (for Ubuntu. If you use different distro, please install equivalent package ): 
+### Preinstall (for Ubuntu. If you use different distro, please install equivalent package ): 
 ```bash
 echo "update phase"
 apt-get update
@@ -54,8 +54,7 @@ apt-get install -y zsh fish tree ncdu aria2  p7zip-full python3-dev perl curl
 apt-get install -y -t bionic-backports cockpit cockpit-pcp # for ubuntu 18.04
 apt-get install -y cockpit cockpit-pcp                     # for ubuntu 19.04
 ```
-Preinstall (common):
---
+### Preinstall (common):
 ```bash
 curl https://install.meteor.com/ | sh
 pip3 install pexpect
@@ -89,8 +88,7 @@ HOME=/root
 apt-get install -y npm
 ```
 
-Install
---
+### Install
 
 ```bash
 echo "add nginx to shadow to make pam_module work"
@@ -110,11 +108,11 @@ mkdir -p /etc/c9/.c9/runners/
 wget https://raw.githubusercontent.com/HuJK/Cloud9-hub/master/Python%203.run -O "/etc/c9/.c9/runners/Python 3.run"
 ```
 
-Postinstall.
---
+### Postinstall.
+
 Edit ```/etc/nginx/sites-enabled/c9io``` with vim, nano, or any other text editior with root. And follow following instructions.
 
-##### 1. Configure ssl certificates
+#### 1. Configure ssl certificates
 
 use self-signed certificates:
 ```bash
@@ -128,7 +126,7 @@ openssl req -new -x509 -key ssl.key -out ssl.pem -days 3650 -subj /CN=localhost
 cat ssl.pem ssl.key > /etc/cockpit/ws-certs.d/0-self-signed.cert
 ```
 
-##### 2. Use valid ssl certificates
+#### 2. Use valid ssl certificates
 
 1. Buy or get a free domain
 2. Get a valid certificate from letsencrypt
@@ -142,7 +140,7 @@ cat ssl.pem ssl.key > /etc/cockpit/ws-certs.d/0-self-signed.cert
 cat ssl.pem ssl.key > /etc/cockpit/ws-certs.d/0-self-signed.cert
 ```
 
-##### 3. Change port number(if you want)
+#### 3. Change port number(if you want)
 Edit line 8~9
 ```
     listen 8443 ssl;
