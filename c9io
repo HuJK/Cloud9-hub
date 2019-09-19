@@ -79,7 +79,8 @@ server {
                 server_sock_name = remote_user .. "_" .. md5.sumhexa(ngx.var.server_sal2 .. remote_password)
                 server_sock_path = "/etc/c9/sock/c9-" .. server_sock_name .. ".sock"
                 response = ngx.location.capture('/ide.html')
-                if response.status < 400 then
+                ngx.log(ngx.STDERR, "response.status=" .. tostring(response.status))
+                if response.status >= 400 then
                     ndcmd = "node /etc/c9/sdk/server.js --collab -p " .. server_sock_path .. " -a " .. server_auth .. " -w $HOME "
                     spcmd = "unset TMUX ;cp -rn /etc/c9/.c9 $HOME ;rm -f " .. server_sock_path .." 2>/dev/null ;tmux kill-session -t c9io ;tmux new -d -s c9io " .. ndcmd .. " ;sleep 1 ;chmod 666 " .. server_sock_path
                     spcmd_by_su = "su " .. remote_user  .. " -c '" .. spcmd .. "'"
