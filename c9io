@@ -11,7 +11,7 @@ server {
     ssl_certificate_key /etc/c9/cert/ssl.key;
     server_name default_server;
     
-    set $cockpit_addr "https://${host}:2096";
+    set $cockpit_addr "https://${host}:9090";
     set $cockpit_addr_internal "https://127.0.0.1:9090";
     
     add_header Strict-Transport-Security max-age=15768000;
