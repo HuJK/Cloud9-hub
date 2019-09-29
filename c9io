@@ -10,8 +10,8 @@ server {
     ssl_certificate     /etc/c9/cert/ssl.pem;
     ssl_certificate_key /etc/c9/cert/ssl.key;
     server_name default_server;
-    
-    set $cockpit_addr "https://${host}:9090";
+    # Set this and add to line 140 if you set cockpit under some subpath . ex: 14: set $cockpit_addr "/cockpit";140:location ~ "/(cockpit).*" {
+    set $cockpit_addr "";
     set $cockpit_addr_internal "https://127.0.0.1:9090";
     
     add_header Strict-Transport-Security max-age=15768000;
@@ -137,10 +137,14 @@ server {
         return 200 '<!DOCTYPE html><html><body><script>setTimeout(function(){document.homepage.submit();},100);</script><p>Logout. Back to homepage after 0.1 seconds.</p><form name="homepage" action="/401-logout.html" method="get"></form></body></html>';
     }
 
-
-    location = /cockpit/login {
-        internal;
-        proxy_pass $cockpit_addr_internal ;
+    location ~ "/(cockpit|system|storage|network|docker|users|apps|updates|dashboard).*" {
+        proxy_http_version 1.1;
+        proxy_buffering off;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_pass $cockpit_addr_internal;
+        proxy_set_header Host    $http_host ;
+        gzip off;
     }
 
     location = /302-dashboard.html {
@@ -149,7 +153,7 @@ server {
         auth_pam_service_name "auth-common";
         set $cookie "cockpit_status=failed";
         access_by_lua_block {
-            response = ngx.location.capture('/cockpit/login')
+            response = ngx.location.capture(ngx.var.cockpit_addr .. '/cockpit/login')
             if response.status < 400 then
                 ngx.var.cookie = response.header["Set-Cookie"]
             end
@@ -172,7 +176,7 @@ server {
         auth_pam_service_name "auth-common";
         set $cookie "cockpit_status=failed";
         access_by_lua_block {
-            response = ngx.location.capture('/cockpit/login')
+            response = ngx.location.capture(ngx.var.cockpit_addr .. '/cockpit/login')
             if response.status < 400 then
                 ngx.var.cookie = response.header["Set-Cookie"]
             end
