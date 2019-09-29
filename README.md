@@ -20,7 +20,7 @@ Run this in terminal
 And goto url : [https://your_server_ip:8443](https://your_server_ip:8443)
 
 Demo:
-[https://035654bf.sivilization.com:8443](https://035654bf.sivilization.com:8443)
+https://54.172.42.195.sivilization.com/:8443](https://54.172.42.195.sivilization.com/:8443)
 
 user|passwd
 ------|---------
