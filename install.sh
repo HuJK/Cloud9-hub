@@ -26,6 +26,7 @@ apt-get install -y -t bionic-backports cockpit cockpit-pcp #for ubuntu 18.04
 apt-get install -y cockpit cockpit-pcp                     #for ubuntu 19.04
 set -e
 curl https://install.meteor.com/ | sh
+pip3 install setuptools
 pip3 install -U pexpect
 pip3 install -U git+https://github.com/cmorisse/ikp3db.git#egg=ikp3db
 pip install ikpdb
