@@ -19,7 +19,7 @@ apt-get install -y luajit
 apt-get install -y libnginx-mod-http-lua
 apt-get install -y tmux gdbserver gdb git python python3 build-essential wget libncurses-dev nodejs 
 apt-get install -y python-pip python3-pip golang default-jdk coffeescript php-cli php-fpm ruby
-apt-get install -y zsh fish tree ncdu aria2 p7zip-full python3-dev perl curl
+apt-get install -y zsh fish tree ncdu aria2 p7zip-full python-dev python3-dev perl curl
 set +e # folling command only have one will success
 #cockpit for user management
 apt-get install -y -t bionic-backports cockpit cockpit-pcp #for ubuntu 18.04
