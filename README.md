@@ -34,12 +34,12 @@ demo03|demo)#
 ```bash
 echo "update phase"
 apt-get update
-apt-get upgrade  -y
+apt-get upgrade -y
 # In my distro(debian 10), It seems nginx and nginx-full are not compatible. I have to remove nginx than I can install nginx-full.
-apt-get remove  -y nginx
+apt-get remove -y nginx
 # The install script will detect npm exist or not on the system. If exist, it will not use itself's npm
 # But in Ubuntu 19.04, npm from apt are not compatible with it. So I have to remove first, and install back later.
-apt-get remove  -y npm
+apt-get remove -y npm
 apt-get autoremove -y
 echo "install dependanse phase"
 apt-get install -y nginx-full
@@ -49,7 +49,7 @@ apt-get install -y luajit
 apt-get install -y libnginx-mod-http-lua
 apt-get install -y tmux gdbserver gdb git python python3 build-essential wget libncurses-dev nodejs 
 apt-get install -y python-pip python3-pip golang default-jdk coffeescript php-cli php-fpm ruby
-apt-get install -y zsh fish tree ncdu aria2  p7zip-full python3-dev perl curl
+apt-get install -y zsh fish tree ncdu aria2 p7zip-full python-dev python3-dev perl curl
 #cockpit for user management
 apt-get install -y -t bionic-backports cockpit cockpit-pcp # for ubuntu 18.04
 apt-get install -y cockpit cockpit-pcp                     # for ubuntu 19.04
@@ -57,6 +57,8 @@ apt-get install -y cockpit cockpit-pcp                     # for ubuntu 19.04
 ### Preinstall (common):
 ```bash
 curl https://install.meteor.com/ | sh
+pip3 install setuptools
+pip install  setuptools
 pip3 install -U pexpect
 pip3 install -U git+https://github.com/cmorisse/ikp3db.git#egg=ikp3db
 pip install ikpdb
