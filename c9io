@@ -147,7 +147,7 @@ server {
         gzip off;
     }
     
-    location ~ "/(user).*" {
+    location ~ "^/user/.*" {
         proxy_http_version 1.1;
         proxy_buffering off;
         proxy_set_header Upgrade $http_upgrade;
