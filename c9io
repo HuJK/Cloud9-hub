@@ -137,7 +137,7 @@ server {
         return 200 '<!DOCTYPE html><html><body><script>setTimeout(function(){document.homepage.submit();},100);</script><p>Logout. Back to homepage after 0.1 seconds.</p><form name="homepage" action="/401-logout.html" method="get"></form></body></html>';
     }
 
-    location ~ "/(cockpit|system|storage|network|docker|users|apps|updates|dashboard).*" {
+    location ~ "^/(cockpit|system|storage|network|docker|users|apps|updates|dashboard).*" {
         proxy_http_version 1.1;
         proxy_buffering off;
         proxy_set_header Upgrade $http_upgrade;
