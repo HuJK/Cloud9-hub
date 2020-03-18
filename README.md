@@ -1,3 +1,6 @@
+# Archived
+Due to Cloud9 no longer maintained, I will write a new code-server-hub to replace this repo.
+
 # Cloud9 Hub
 Simple hub page for [Cloud9 SDK](https://github.com/c9/core) for multiuser. 
 
